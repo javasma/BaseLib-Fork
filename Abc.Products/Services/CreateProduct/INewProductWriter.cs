@@ -3,8 +3,8 @@ using System.Threading.Tasks;
 
 namespace Abc.Products.CreateProduct
 {
-    internal interface INewProductWriter
+    public interface INewProductWriter
     {
-        Task WriteAsync(ProductType product);
+        Task<int> WriteAsync(ProductType product);
     }
 }

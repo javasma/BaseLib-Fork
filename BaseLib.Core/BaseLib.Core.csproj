@@ -2,6 +2,11 @@
 
   <PropertyGroup>
 	  <TargetFramework>netcoreapp3.1</TargetFramework>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>BaseLib.Core</PackageId>
+    <Version>1.0.0-alpha</Version>
+    <Authors>Mauricio David Obando</Authors>
+    <Company>Mauricio David Obando</Company>
   </PropertyGroup>
 
 </Project>

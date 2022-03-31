@@ -1,6 +1,6 @@
 ﻿namespace Abc.Products.Models
 {
-    internal class ProductType
+    public class ProductType
     {
         public string Id { get; set; }
         public string SKU { get; set; }
