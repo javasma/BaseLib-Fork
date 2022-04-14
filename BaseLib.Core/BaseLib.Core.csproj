@@ -1,12 +1,16 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-	  <TargetFramework>netcoreapp3.1</TargetFramework>
-    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-    <PackageId>BaseLib.Core</PackageId>
-    <Version>1.0.0-alpha</Version>
-    <Authors>Mauricio David Obando</Authors>
-    <Company>Mauricio David Obando</Company>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>netcoreapp3.1</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageId>BaseLib.Core</PackageId>
+		<Version>1.0.0-alpha</Version>
+		<Authors>Mauricio David Obando</Authors>
+		<Company>Mauricio David Obando</Company>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentValidation" Version="10.4.0" />
+	</ItemGroup>
 
 </Project>

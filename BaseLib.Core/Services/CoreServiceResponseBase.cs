@@ -2,27 +2,41 @@
 
 namespace BaseLib.Core.Services
 {
-    public interface ICoreServiceResponse
-    {
-        bool Succeeded { get; set; }
-        string Reason { get; }
-        System.Enum ReasonCode { get; set; }
-        string[] Messages { get; set; }
-    }
 
-    public interface ICoreServiceResponse<TReasonCode> : ICoreServiceResponse
-        where TReasonCode : System.Enum
-    {
-        new TReasonCode ReasonCode { get; set; }
-    }
-
-    public abstract class CoreServiceResponseBase<TReasonCode> : ICoreServiceResponse<TReasonCode>
-        where TReasonCode : System.Enum
+    public abstract class CoreServiceResponseBase : ICoreServiceResponse
     {
         public bool Succeeded { get; set; }
-        public TReasonCode ReasonCode { get; set; }
-        public string Reason { get { return this.ReasonCode.GetDescription(); } }
+        public Enum ReasonCode { get; set; }
+        public string Reason { get { return this.ReasonCode?.GetDescription(); } }
         public string[] Messages { get; set; }
-        Enum ICoreServiceResponse.ReasonCode { get { return this.ReasonCode; } set { this.ReasonCode = (TReasonCode)value; } }
+
+        
     }
+
+    public static class CoreServiceResponseFactory
+    {
+        public static TResponse Succeed<TResponse>(Enum reasonCode = null, params string[] messages)
+            where TResponse : ICoreServiceResponse, new()
+        {
+            return new TResponse
+            {
+                Succeeded = true,
+                ReasonCode = reasonCode ?? CoreServiceReasonCode.Succeeded,
+                Messages = messages
+            };
+        }
+
+        public static TResponse Fail<TResponse>(Enum reasonCode = null, params string[] messages)
+            where TResponse : ICoreServiceResponse, new()
+        {
+            return new TResponse
+            {
+                Succeeded = false,
+                ReasonCode = reasonCode ?? CoreServiceReasonCode.Failed,
+                Messages = messages
+            };
+        }
+    }
+
+
 }
