@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using System;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaseLib.Core.Services
@@ -17,52 +18,57 @@ namespace BaseLib.Core.Services
         protected TResponse Response { get { return this.response; } set { this.response = value; } }
 
         protected IValidator<TRequest> Validator { get; }
+        private ICoreServiceJournal<TRequest, TResponse> Journal { get; }
 
-        public CoreServiceBase(IValidator<TRequest> validator)
+        public CoreServiceBase(IValidator<TRequest> validator = null, ICoreServiceJournal<TRequest, TResponse> journal = null)
         {
             Validator = validator;
+            Journal = journal ?? new NullCoreServiceJournal();
         }
 
         public async Task<TResponse> RunAsync(TRequest request)
         {
-            try
-            {
-                this.request = request;
+            this.request = request;
 
-                if (this.Validator != null)
+            using (var context = new CoreServiceJournalContext(this))
+            {
+                try
                 {
-                    var validationResult = await this.Validator.ValidateAsync(this.Request);
-                    if (!validationResult.IsValid)
+                    if (this.Validator != null)
                     {
-                        this.response = new TResponse
+                        var validationResult = await this.Validator.ValidateAsync(this.Request);
+                        if (!validationResult.IsValid)
                         {
-                            //toma el resultado y lo mapea al response
-                            Succeeded = false,
-                            ReasonCode = CoreServiceReasonCode.ValidationResultNotValid,
-                            Messages = validationResult.Errors.Select(e => e.ErrorMessage).ToArray()
-                        };
-                        return this.response;
+                            this.response = new TResponse
+                            {
+                                //toma el resultado y lo mapea al response
+                                Succeeded = false,
+                                ReasonCode = CoreServiceReasonCode.ValidationResultNotValid,
+                                Messages = validationResult.Errors.Select(e => e.ErrorMessage).ToArray()
+                            };
+                            return this.response;
+                        }
+                    }
+
+                    //No hay validación o la validación fue exitosa
+                    this.response = await RunAsync();
+
+                    if (this.response.ReasonCode == null)
+                    {
+                        this.response.ReasonCode = this.response.Succeeded ? CoreServiceReasonCode.Succeeded : CoreServiceReasonCode.Failed;
                     }
                 }
-                
-                //No hay validación o la validación fue exitosa
-                this.response = await RunAsync();
-
-                if (this.response.ReasonCode == null)
+                catch (Exception ex)
                 {
-                    this.response.ReasonCode = this.response.Succeeded ? CoreServiceReasonCode.Succeeded : CoreServiceReasonCode.Failed;
+                    this.response = new TResponse
+                    {
+                        Succeeded = false,
+                        ReasonCode = CoreServiceReasonCode.ExceptionHappened,
+                        Messages = new string[] { $"Excepcion of type {ex.GetType().Name} with message {ex.Message} Happened" }
+                    };
                 }
 
                 return this.response;
-            }
-            catch (System.Exception ex)
-            {
-                return new TResponse
-                {
-                    Succeeded = false,
-                    ReasonCode = CoreServiceReasonCode.ExceptionHappened,
-                    Messages = new string[] { $"Excepcion of type {ex.GetType().Name} with message {ex.Message} Happened" }
-                };
             }
         }
 
@@ -77,6 +83,34 @@ namespace BaseLib.Core.Services
                 Messages = messages
             };
         }
+        private class CoreServiceJournalContext : IDisposable
+        {
+            private readonly CoreServiceBase<TRequest, TResponse> service;
+
+            public CoreServiceJournalContext(CoreServiceBase<TRequest, TResponse> service)
+            {
+                this.service = service;
+                service.Journal.BeginAsync(this.service.Request);
+            }
+
+            public void Dispose()
+            {
+                service.Journal.EndAsync(this.service.Response);
+            }
+        }
+        private class NullCoreServiceJournal : ICoreServiceJournal<TRequest, TResponse>
+        {
+            public Task BeginAsync(TRequest request)
+            {
+                return Task.FromResult(0);
+            }
+
+            public Task EndAsync(TResponse response)
+            {
+                return Task.FromResult(0);
+            }
+        }
+
     }
 
 }

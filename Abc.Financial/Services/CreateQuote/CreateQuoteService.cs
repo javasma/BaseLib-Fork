@@ -11,8 +11,8 @@ namespace Abc.Financial.Services.CreateQuote
         private readonly IInstrumentReader instrumentReader;
         private readonly List<Instrument> instruments = new List<Instrument>();
 
-        public CreateQuoteService(IValidator<CreateQuoteRequest> validator, IInstrumentReader instrumentReader)
-            : base(validator)
+        public CreateQuoteService(IInstrumentReader instrumentReader)
+            : base()
         {
             this.instrumentReader = instrumentReader;
         }
