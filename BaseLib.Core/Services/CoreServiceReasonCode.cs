@@ -10,11 +10,14 @@ namespace BaseLib.Core.Services
         [Description("Error Operacion")]
         Failed = 2,
 
-        [Description("Resultado de validación de request no es es válido")]
-        ValidationResultNotValid = 125,
-
         [Description("Operación no implementada")]
-        NotImplemented = 126,
+        NotImplemented = 64,
+
+        [Description("Operación en mantenimiento")]
+        Maintenance = 65,
+
+        [Description("Resultado de validación de request no es es válido")]
+        ValidationResultNotValid = 96,
 
         [Description("Ocurrio una excepción en el sistema")]
         ExceptionHappened = 127

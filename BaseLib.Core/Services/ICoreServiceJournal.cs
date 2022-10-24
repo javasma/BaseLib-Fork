@@ -2,11 +2,9 @@
 
 namespace BaseLib.Core.Services
 {
-    public interface ICoreServiceJournal<TRequest, TResponse>
-        where TRequest : ICoreServiceRequest
-        where TResponse : ICoreServiceResponse
+    public interface ICoreServiceJournal
     {
-        Task BeginAsync(TRequest request);
-        Task EndAsync(TResponse response);
+        Task BeginAsync(ICoreServiceState state);
+        Task EndAsync(ICoreServiceState state);
     }
 }

@@ -1,75 +1,107 @@
 ﻿using FluentValidation;
 using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 
 namespace BaseLib.Core.Services
 {
-    public abstract class CoreServiceBase<TRequest, TResponse> : ICoreServiceBase<TRequest, TResponse>
+    public abstract partial class CoreServiceBase<TRequest, TResponse> : ICoreServiceBase<TRequest, TResponse>
          where TRequest : ICoreServiceRequest
          where TResponse : ICoreServiceResponse, new()
     {
+        private string operationId;
+        private string correlationId;
         private TRequest request;
         private TResponse response;
+        private DateTimeOffset startedOn;
+        private DateTimeOffset finishedOn;
 
-        protected TRequest Request { get { return this.request; } }
-
-        protected TResponse Response { get { return this.response; } set { this.response = value; } }
-
-        protected IValidator<TRequest> Validator { get; }
-        private ICoreServiceJournal<TRequest, TResponse> Journal { get; }
-
-        public CoreServiceBase(IValidator<TRequest> validator = null, ICoreServiceJournal<TRequest, TResponse> journal = null)
+        protected TRequest Request
         {
-            Validator = validator;
-            Journal = journal ?? new NullCoreServiceJournal();
+            get { return this.request; }
         }
 
-        public async Task<TResponse> RunAsync(TRequest request)
+        protected TResponse Response
         {
-            this.request = request;
+            get { return this.response; }
+            set { this.response = value; }
+        }
 
-            using (var context = new CoreServiceJournalContext(this))
+        protected IValidator<TRequest> Validator { get; set; }
+        private ICoreServiceJournal Journal { get; }
+
+        protected string OperationId { get { return this.operationId; } }
+        protected string CorrelationId { get { return this.correlationId; } }
+
+        protected DateTimeOffset StartedOn { get { return this.startedOn; } }
+
+        protected DateTimeOffset FinishedOn { get { return this.finishedOn; } }
+
+        public CoreServiceBase(IValidator<TRequest> validator = null, ICoreServiceJournal journal = null)
+        {
+            this.Validator = validator;
+            this.Journal = journal ?? new NullCoreServiceJournal();
+        }
+
+        public async Task<ICoreServiceResponse> RunAsync(ICoreServiceRequest request, string correlationId = null)
+        {
+            var response =  await RunAsync((TRequest)request, correlationId);
+            return response;
+        }
+
+        public async Task<TResponse> RunAsync(TRequest request, string correlationId = null)
+        {
+            try
             {
-                try
+                this.request = request;
+                this.operationId = Guid.NewGuid().ToString();
+                this.correlationId = correlationId;
+                this.startedOn = DateTimeOffset.UtcNow;
+
+                await this.Journal.BeginAsync(this.GetCurrentState());
+
+                if (this.Validator != null)
                 {
-                    if (this.Validator != null)
+                    var validationResult = await this.Validator.ValidateAsync(this.Request);
+                    if (!validationResult.IsValid)
                     {
-                        var validationResult = await this.Validator.ValidateAsync(this.Request);
-                        if (!validationResult.IsValid)
+                        this.response = new TResponse
                         {
-                            this.response = new TResponse
-                            {
-                                //toma el resultado y lo mapea al response
-                                Succeeded = false,
-                                ReasonCode = CoreServiceReasonCode.ValidationResultNotValid,
-                                Messages = validationResult.Errors.Select(e => e.ErrorMessage).ToArray()
-                            };
-                            return this.response;
-                        }
-                    }
-
-                    //No hay validación o la validación fue exitosa
-                    this.response = await RunAsync();
-
-                    if (this.response.ReasonCode == null)
-                    {
-                        this.response.ReasonCode = this.response.Succeeded ? CoreServiceReasonCode.Succeeded : CoreServiceReasonCode.Failed;
+                            //toma el resultado y lo mapea al response
+                            Succeeded = false,
+                            ReasonCode = CoreServiceReasonCode.ValidationResultNotValid,
+                            Messages = validationResult.Errors.Select(e => e.ErrorMessage).ToArray()
+                        };
+                        return this.response;
                     }
                 }
-                catch (Exception ex)
+
+                //No hay validación o la validación fue exitosa
+                this.response = await RunAsync();
+
+                if (this.response.ReasonCode == null)
                 {
-                    this.response = new TResponse
-                    {
-                        Succeeded = false,
-                        ReasonCode = CoreServiceReasonCode.ExceptionHappened,
-                        Messages = new string[] { $"Excepcion of type {ex.GetType().Name} with message {ex.Message} Happened" }
-                    };
+                    this.response.ReasonCode = this.response.Succeeded ? CoreServiceReasonCode.Succeeded : CoreServiceReasonCode.Failed;
                 }
-
-                return this.response;
             }
+            catch (Exception ex)
+            {
+                this.response = new TResponse
+                {
+                    Succeeded = false,
+                    ReasonCode = CoreServiceReasonCode.ExceptionHappened,
+                    Messages = new string[] { $"Excepcion of type {ex.GetType().Name} with message {ex.Message} Happened" }
+                };
+            }
+            finally
+            {
+                this.finishedOn = DateTimeOffset.UtcNow;
+                await this.Journal.EndAsync(this.GetCurrentState());
+            }
+
+            return this.response;
+
         }
 
         protected abstract Task<TResponse> RunAsync();
@@ -83,32 +115,18 @@ namespace BaseLib.Core.Services
                 Messages = messages
             };
         }
-        private class CoreServiceJournalContext : IDisposable
+
+        public CoreServiceState GetCurrentState()
         {
-            private readonly CoreServiceBase<TRequest, TResponse> service;
-
-            public CoreServiceJournalContext(CoreServiceBase<TRequest, TResponse> service)
-            {
-                this.service = service;
-                service.Journal.BeginAsync(this.service.Request);
-            }
-
-            public void Dispose()
-            {
-                service.Journal.EndAsync(this.service.Response);
-            }
-        }
-        private class NullCoreServiceJournal : ICoreServiceJournal<TRequest, TResponse>
-        {
-            public Task BeginAsync(TRequest request)
-            {
-                return Task.FromResult(0);
-            }
-
-            public Task EndAsync(TResponse response)
-            {
-                return Task.FromResult(0);
-            }
+            var environment = new Dictionary<string, object>{
+                {"OperationId", this.OperationId},
+                {"CorrelationId", this.CorrelationId},
+                {"StartedOn", this.startedOn},
+                {"FinishedOn", this.finishedOn},
+                {"Request", this.Request},
+                {"Response", this.Response}
+            };
+            return new CoreServiceState(environment);
         }
 
     }
