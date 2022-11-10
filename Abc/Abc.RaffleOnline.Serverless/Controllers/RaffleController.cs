@@ -10,9 +10,9 @@ namespace Abc.RaffleOnline.Serverless.Controllers
     [Route("[controller]")]
     public class RaffleController : ControllerBase
     {
-        private readonly OpenRaffleService openRaffleService;
+        private readonly IOpenRaffleService openRaffleService;
 
-        public RaffleController(OpenRaffleService openRaffleService)
+        public RaffleController(IOpenRaffleService openRaffleService)
         {
             this.openRaffleService = openRaffleService;
         }

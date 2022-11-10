@@ -10,11 +10,12 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Resources\fix-self-closing-tags.xslt" />
+		<EmbeddedResource Include="Resources\fix-self-closing-tags.xslt" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="FluentValidation" Version="10.4.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
 	</ItemGroup>
 
 </Project>

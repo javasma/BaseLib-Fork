@@ -7,7 +7,7 @@ namespace Abc.RaffleOnline.AmazonCloud
 {
     public class RaffleServiceJournalSqsProxy : ICoreServiceJournal
     {
-        private const string queueName = "cesione-journal-queue";
+        private const string queueName = "raffle-journal-queue";
         private readonly IAmazonSQS sqsClient;
 
         public RaffleServiceJournalSqsProxy(IAmazonSQS sqsClient)

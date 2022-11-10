@@ -1,7 +1,10 @@
+using System;
 using Abc.RaffleOnline.Raffles.OpenRaffle;
 using Abc.RaffleOnline.Raffles.OpenRaffle.InProc;
 using BaseLib.Core.Services;
 using Microsoft.Extensions.DependencyInjection;
+using System.Reflection;
+using Abc.RaffleOnline.Raffles.Billing;
 
 namespace Abc.RaffleOnline
 {
@@ -10,15 +13,32 @@ namespace Abc.RaffleOnline
         public static IServiceCollection AddRaffleOnlineServices(this IServiceCollection services)
         {
             services.AddSingleton<ICoreServiceJournal, RaffleServiceJournal>();
-            
+
             #region Raffles
 
-            services.AddTransient<OpenRaffleService>();
+            services.AddTransient<IOpenRaffleService, OpenRaffleService>();
             services.AddSingleton<IRaffleWriter, RaffleInProcWriter>();
-            
+
+            services.AddTransient<IBillingService, BillingService>(); 
 
             #endregion
 
+            services.AddTransient<Func<string, ICoreServiceBase>>((sp) => (typeName) =>
+            {
+                var type = Assembly.GetExecutingAssembly().GetType(typeName);
+                return sp.GetService(type) as ICoreServiceBase;
+
+            });
+
+             //Fabrica de servicios a partir del typeName 
+            services.AddTransient<Func<string, ICoreServiceBase>>((sp) => (typeName) =>
+            {
+                var type = Assembly.GetExecutingAssembly().GetType(typeName);
+                return sp.GetService(type) as ICoreServiceBase;
+
+            });
+
+            services.AddSingleton<CoreServiceRunner>();
             return services;
         }
     }

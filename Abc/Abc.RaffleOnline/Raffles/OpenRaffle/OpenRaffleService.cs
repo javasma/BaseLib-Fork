@@ -2,17 +2,23 @@ using System;
 using System.Threading.Tasks;
 using Abc.RaffleOnline.Models;
 using BaseLib.Core.Services;
+using Abc.RaffleOnline.Raffles.Billing;
 
 namespace Abc.RaffleOnline.Raffles.OpenRaffle
 {
-    public class OpenRaffleService : RaffleServiceBase<OpenRaffleRequest, OpenRaffleResponse>
+    public class OpenRaffleService : RaffleServiceBase<OpenRaffleRequest, OpenRaffleResponse>, IOpenRaffleService
     {
         private readonly IRaffleWriter writer;
+        private readonly ICoreServiceFireOnly serviceInvoker;
 
-        public OpenRaffleService(IRaffleWriter writer, ICoreServiceJournal journal)
+        public OpenRaffleService(
+            IRaffleWriter writer, 
+            ICoreServiceFireOnly serviceInvoker,
+            ICoreServiceJournal journal)
             : base(journal)
         {
             this.writer = writer;
+            this.serviceInvoker = serviceInvoker;
         }
 
         protected override async Task<OpenRaffleResponse> RunAsync()
@@ -28,6 +34,11 @@ namespace Abc.RaffleOnline.Raffles.OpenRaffle
 
             await this.writer.WriteAsync(raffle);
 
+            //fire and forget billing
+            await this.serviceInvoker.FireAsync<IBillingService>(new BillingRequest{
+                Raffle = raffle
+            });
+
             return new OpenRaffleResponse
             {
                 Succeeded = true,
@@ -35,6 +46,8 @@ namespace Abc.RaffleOnline.Raffles.OpenRaffle
             };
         }
     }
+
+       
 
     public class OpenRaffleRequest : RaffleServiceRequest
     {

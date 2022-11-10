@@ -36,7 +36,7 @@
         }
       }
     },
-    "NetCoreSqsFunction": {
+    "JournalMessageProcessor": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
         "Handler": "Abc.RaffleOnline.Serverless::Abc.RaffleOnline.Serverless.JournalMessageProcessor::SqsEventHandler",
@@ -46,20 +46,58 @@
         "Timeout": 30,
         "Role": null,
         "Policies": [
-          "AWSLambda_FullAccess"
+          "AWSLambda_FullAccess",
+          "AmazonSQSFullAccess"
         ],
         "Events": {
           "SQSEvent": {
             "Type": "SQS",
             "Properties": {
-              "Queue": "arn:aws:sqs:us-east-1:781988280761:cesione-journal-queue",
+              "Queue": "arn:aws:sqs:us-east-1:781988280761:raffle-journal-queue",
               "BatchSize": 10
             }
           }
         }
+      },
+      "DependsOn" : "JournalQueue"
+    },
+    "JournalQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "QueueName": "raffle-journal-queue"
+      }
+    },
+    "ServiceMessageProcessor": {
+      "Type": "AWS::Serverless::Function",
+      "Properties": {
+        "Handler": "Abc.RaffleOnline.Serverless::Abc.RaffleOnline.Serverless.ServiceMessageProcessor::SqsEventHandler",
+        "Runtime": "dotnetcore3.1",
+        "CodeUri": "",
+        "MemorySize": 256,
+        "Timeout": 30,
+        "Role": null,
+        "Policies": [
+          "AWSLambda_FullAccess",
+          "AmazonSQSFullAccess"
+        ],
+        "Events": {
+          "SQSEvent": {
+            "Type": "SQS",
+            "Properties": {
+              "Queue": "arn:aws:sqs:us-east-1:781988280761:raffle-service-queue",
+              "BatchSize": 10
+            }
+          }
+        }
+      },
+      "DependsOn" : "ServiceQueue"
+    },
+    "ServiceQueue": {
+      "Type": "AWS::SQS::Queue",
+      "Properties": {
+        "QueueName": "raffle-service-queue"
       }
     }
-    
   },
   "Outputs": {
     "ApiURL": {

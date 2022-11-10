@@ -116,6 +116,17 @@ namespace BaseLib.Core.Services
             };
         }
 
+        public TResponse Succeed(Enum reasonCode, params string[] messages)
+        {
+            return new TResponse
+            {
+                Succeeded = true,
+                ReasonCode = reasonCode,
+                Messages = messages
+            };
+        }
+
+
         public CoreServiceState GetCurrentState()
         {
             var environment = new Dictionary<string, object>{
