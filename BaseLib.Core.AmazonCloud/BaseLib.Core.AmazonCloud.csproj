@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>BaseLib.Core.AmazonCloud</PackageId>
+    <Version>1.1.0-beta-001</Version>
+    <AssemblyVersion>1.1.0.1</AssemblyVersion>
+    <FileVersion>1.1.0.1</FileVersion>
+    <Authors>Mauricio David Obando</Authors>
+    <Company>Mauricio David Obando</Company>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.100.14" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.2.121" />
+    <PackageReference Include="BaseLib.Core" Version="1.1.0-beta-002" />
+  </ItemGroup>
+
+</Project>
