@@ -22,8 +22,7 @@ namespace Abc.RaffleOnline.Serverless
                             .AddEnvironmentVariables() // AddEnvironmentVariables() method requires Microsoft.Extensions.Configuration.EnvironmentVariables NuGet package
                             .Build();
                         var services = new ServiceCollection()
-                            .AddRaffleOnlineServices()
-                            .AddRaffleOnlineAmazonCloudServices();
+                            .AddCoreServices();
                         serviceProvider = services.BuildServiceProvider();
 
                     }

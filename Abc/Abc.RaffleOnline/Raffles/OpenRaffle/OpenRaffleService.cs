@@ -14,7 +14,7 @@ namespace Abc.RaffleOnline.Raffles.OpenRaffle
         public OpenRaffleService(
             IRaffleWriter writer, 
             ICoreServiceFireOnly serviceInvoker,
-            ICoreServiceJournal journal)
+            ICoreStatusEventSink journal)
             : base(journal)
         {
             this.writer = writer;

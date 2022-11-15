@@ -3,8 +3,6 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32228.430
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BaseLib.Core", "BaseLib.Core\BaseLib.Core.csproj", "{C845268A-9AA7-4AE2-9DB3-BFA3095C9D74}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.RaffleOnline", "Abc\Abc.RaffleOnline\Abc.RaffleOnline.csproj", "{621A07EA-F7D3-47A7-8F11-8B5B0591EE3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.RaffleOnline.WebApi", "Abc\Abc.RaffleOnline.WebApi\Abc.RaffleOnline.WebApi.csproj", "{FC322537-2F55-4B24-B1EE-FBC5E6D03F35}"
@@ -13,18 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Abc", "Abc", "{60F2923E-D95
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.RaffleOnline.Serverless", "Abc\Abc.RaffleOnline.Serverless\Abc.RaffleOnline.Serverless.csproj", "{273C38F5-B3AC-462E-9C3B-5F21933D83AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Abc.RaffleOnline.AmazonCloud", "Abc\Abc.RaffleOnline.AmazonCloud\Abc.RaffleOnline.AmazonCloud.csproj", "{8179ABE7-B9C1-4434-8359-09ACA5997F21}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{C845268A-9AA7-4AE2-9DB3-BFA3095C9D74}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C845268A-9AA7-4AE2-9DB3-BFA3095C9D74}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C845268A-9AA7-4AE2-9DB3-BFA3095C9D74}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C845268A-9AA7-4AE2-9DB3-BFA3095C9D74}.Release|Any CPU.Build.0 = Release|Any CPU
 		{621A07EA-F7D3-47A7-8F11-8B5B0591EE3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{621A07EA-F7D3-47A7-8F11-8B5B0591EE3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{621A07EA-F7D3-47A7-8F11-8B5B0591EE3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -37,10 +29,6 @@ Global
 		{273C38F5-B3AC-462E-9C3B-5F21933D83AD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{273C38F5-B3AC-462E-9C3B-5F21933D83AD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{273C38F5-B3AC-462E-9C3B-5F21933D83AD}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8179ABE7-B9C1-4434-8359-09ACA5997F21}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8179ABE7-B9C1-4434-8359-09ACA5997F21}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8179ABE7-B9C1-4434-8359-09ACA5997F21}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8179ABE7-B9C1-4434-8359-09ACA5997F21}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +38,5 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{273C38F5-B3AC-462E-9C3B-5F21933D83AD} = {60F2923E-D957-416F-8B6E-4EEFF1B31826}
-		{8179ABE7-B9C1-4434-8359-09ACA5997F21} = {60F2923E-D957-416F-8B6E-4EEFF1B31826}
 	EndGlobalSection
 EndGlobal

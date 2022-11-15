@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using Amazon.SQS;
+using BaseLib.Core.AmazonCloud;
+using BaseLib.Core.Services;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -24,8 +27,7 @@ namespace Abc.RaffleOnline.Serverless
                 .AddNewtonsoftJson();
             services
                 .AddSwaggerGen()
-                .AddRaffleOnlineServices()
-                .AddRaffleOnlineAmazonCloudServices();
+                .AddCoreServices();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline

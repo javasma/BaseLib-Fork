@@ -12,15 +12,18 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Abc.RaffleOnline\Abc.RaffleOnline.csproj" />
-    <ProjectReference Include="..\Abc.RaffleOnline.AmazonCloud\Abc.RaffleOnline.AmazonCloud.csproj" />
+    <ProjectReference Include="..\..\BaseLib.Core.AmazonCloud\BaseLib.Core.AmazonCloud.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.100.14" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.2.121" />
+
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="7.2.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="2.1.0" />
+    <PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.30" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
-    <PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.1.0" />
 
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Configuration.EnvironmentVariables" Version="6.0.1" />
@@ -29,5 +32,5 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
 
   </ItemGroup>
-  
+
 </Project>

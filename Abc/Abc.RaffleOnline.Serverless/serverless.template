@@ -16,7 +16,8 @@
         "Role": null,
         "Policies": [
           "AWSLambda_FullAccess",
-          "AmazonSQSFullAccess"
+          "AmazonSQSFullAccess",
+          "AmazonSNSFullAccess"
         ],
         "Events": {
           "ProxyResource": {
@@ -36,10 +37,10 @@
         }
       }
     },
-    "JournalMessageProcessor": {
+    "JournalEventsProcessor": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
-        "Handler": "Abc.RaffleOnline.Serverless::Abc.RaffleOnline.Serverless.JournalMessageProcessor::SqsEventHandler",
+        "Handler": "Abc.RaffleOnline.Serverless::Abc.RaffleOnline.Serverless.JournalEventsProcessor::SqsEventHandler",
         "Runtime": "dotnetcore3.1",
         "CodeUri": "",
         "MemorySize": 256,
@@ -47,24 +48,18 @@
         "Role": null,
         "Policies": [
           "AWSLambda_FullAccess",
-          "AmazonSQSFullAccess"
+          "AmazonSQSFullAccess",
+          "AmazonSNSFullAccess"
         ],
         "Events": {
           "SQSEvent": {
             "Type": "SQS",
             "Properties": {
-              "Queue": "arn:aws:sqs:us-east-1:781988280761:raffle-journal-queue",
+              "Queue": "arn:aws:sqs:us-east-1:781988280761:raffle-journal-events-queue.fifo",
               "BatchSize": 10
             }
           }
         }
-      },
-      "DependsOn" : "JournalQueue"
-    },
-    "JournalQueue": {
-      "Type": "AWS::SQS::Queue",
-      "Properties": {
-        "QueueName": "raffle-journal-queue"
       }
     },
     "ServiceMessageProcessor": {
@@ -78,7 +73,8 @@
         "Role": null,
         "Policies": [
           "AWSLambda_FullAccess",
-          "AmazonSQSFullAccess"
+          "AmazonSQSFullAccess",
+          "AmazonSNSFullAccess"
         ],
         "Events": {
           "SQSEvent": {

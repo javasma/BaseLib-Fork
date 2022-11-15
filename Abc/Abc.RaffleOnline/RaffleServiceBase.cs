@@ -6,8 +6,8 @@ namespace Abc.RaffleOnline
         where TRequest: RaffleServiceRequest
         where TResponse: RaffleServiceResponse, new()
     {
-        public RaffleServiceBase(ICoreServiceJournal journal = null)
-            : base(journal: journal)   
+        public RaffleServiceBase(ICoreStatusEventSink eventSink = null)
+            : base(eventSink: eventSink)   
         {
             
         }
