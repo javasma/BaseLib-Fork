@@ -4,7 +4,9 @@
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>BaseLib.Core</PackageId>
-		<Version>1.1.0-beta-001</Version>
+		<Version>1.1.0-beta-002</Version>
+		<AssemblyVersion>1.1.0.2</AssemblyVersion>
+		<FileVersion>1.1.0.2</FileVersion>		
 		<Authors>Mauricio David Obando</Authors>
 		<Company>Mauricio David Obando</Company>
 	</PropertyGroup>

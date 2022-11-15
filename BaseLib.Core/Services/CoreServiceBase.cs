@@ -12,10 +12,12 @@ namespace BaseLib.Core.Services
     {
         private string operationId;
         private string correlationId;
+
         private TRequest request;
         private TResponse response;
         private DateTimeOffset startedOn;
         private DateTimeOffset finishedOn;
+        private CoreServiceStatus status;
 
         protected TRequest Request
         {
@@ -29,7 +31,7 @@ namespace BaseLib.Core.Services
         }
 
         protected IValidator<TRequest> Validator { get; set; }
-        private ICoreServiceJournal Journal { get; }
+        protected ICoreStatusEventSink EventSink { get; }
 
         protected string OperationId { get { return this.operationId; } }
         protected string CorrelationId { get { return this.correlationId; } }
@@ -38,15 +40,15 @@ namespace BaseLib.Core.Services
 
         protected DateTimeOffset FinishedOn { get { return this.finishedOn; } }
 
-        public CoreServiceBase(IValidator<TRequest> validator = null, ICoreServiceJournal journal = null)
+        public CoreServiceBase(IValidator<TRequest> validator = null, ICoreStatusEventSink eventSink = null)
         {
             this.Validator = validator;
-            this.Journal = journal ?? new NullCoreServiceJournal();
+            this.EventSink = eventSink ?? new NullCoreEventSink();
         }
 
         public async Task<ICoreServiceResponse> RunAsync(ICoreServiceRequest request, string correlationId = null)
         {
-            var response =  await RunAsync((TRequest)request, correlationId);
+            var response = await RunAsync((TRequest)request, correlationId);
             return response;
         }
 
@@ -54,12 +56,13 @@ namespace BaseLib.Core.Services
         {
             try
             {
+                this.status = CoreServiceStatus.Started;
                 this.request = request;
                 this.operationId = Guid.NewGuid().ToString();
                 this.correlationId = correlationId;
                 this.startedOn = DateTimeOffset.UtcNow;
 
-                await this.Journal.BeginAsync(this.GetCurrentState());
+                await this.EventSink.WriteAsync(this.GetStatusEvent());
 
                 if (this.Validator != null)
                 {
@@ -96,8 +99,10 @@ namespace BaseLib.Core.Services
             }
             finally
             {
+                this.status = CoreServiceStatus.Started;
                 this.finishedOn = DateTimeOffset.UtcNow;
-                await this.Journal.EndAsync(this.GetCurrentState());
+
+                await this.EventSink.WriteAsync(this.GetStatusEvent());
             }
 
             return this.response;
@@ -127,20 +132,37 @@ namespace BaseLib.Core.Services
         }
 
 
-        public CoreServiceState GetCurrentState()
+        protected virtual CoreServiceState GetServiceState()
         {
             var environment = new Dictionary<string, object>{
-                {"OperationId", this.OperationId},
-                {"CorrelationId", this.CorrelationId},
+                {"ServiceName", this.GetType().Name },
+                {"ServiceStatus", this.status},
+                {"OperationId", this.operationId},
+                {"CorrelationId", this.correlationId},
                 {"StartedOn", this.startedOn},
                 {"FinishedOn", this.finishedOn},
                 {"Request", this.Request},
                 {"Response", this.Response}
             };
+
             return new CoreServiceState(environment);
         }
 
-    }
+        protected virtual ICoreStatusEvent GetStatusEvent()
+        {
+            return new CoreStatusEvent
+            {
+                ServiceName = this.GetType().Name,
+                Status = this.status,
+                OperationId = this.operationId,
+                CorrelationId = this.correlationId,
+                StartedOn = this.startedOn,
+                FinishedOn = this.finishedOn,
+                Request = this.request,
+                Response = this.response
+            };
+        }
 
+    }
 }
 
