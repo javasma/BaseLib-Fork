@@ -30,15 +30,30 @@ namespace Abc.RaffleOnline.Serverless
 
         private async Task ProcessMessageAsync(SQSEvent.SQSMessage message, ILambdaContext context)
         {
+            context.Logger.Log($"Processing message {message.Body}");
+
             using (var scope = ServiceProviderHelper.CreateScope())
             {
                 var handler = scope.ServiceProvider.GetRequiredService<IJournalEventHandler>();
-                var statusEvent = JsonConvert.DeserializeObject<CoreStatusEvent>(message.Body);
-                if( statusEvent!=null)
+                var payload = JsonConvert.DeserializeObject<Payload>(message.Body) ;
+                var statusEvent = JsonConvert.DeserializeObject<CoreStatusEvent>(payload.Message);
+
+                if (statusEvent != null)
                 {
+                    context.Logger.Log($"status event is: {JsonConvert.SerializeObject(statusEvent, Formatting.Indented)}");
                     await handler.HandleAsync(statusEvent);
+                }
+                else
+                {
+                    context.Logger.Log($"Unable to deserialize status event {message.MessageId}");
                 }
             }
         }
+
+        private class Payload
+        {
+            public string Message{get;set;}
+        }
+
     }
 }

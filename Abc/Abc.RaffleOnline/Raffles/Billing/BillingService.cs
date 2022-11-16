@@ -5,8 +5,8 @@ namespace Abc.RaffleOnline.Raffles.Billing
 {
     public class BillingService : RaffleServiceBase<BillingRequest, BillingResponse>, IBillingService
     {
-        public BillingService(ICoreStatusEventSink journal)
-            : base(journal)
+        public BillingService(ICoreStatusEventSink eventSink)
+            : base(eventSink)
         {
             
         }

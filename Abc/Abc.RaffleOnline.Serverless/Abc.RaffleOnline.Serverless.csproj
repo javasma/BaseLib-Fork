@@ -12,7 +12,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Abc.RaffleOnline\Abc.RaffleOnline.csproj" />
-    <ProjectReference Include="..\..\BaseLib.Core.AmazonCloud\BaseLib.Core.AmazonCloud.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -22,6 +21,7 @@
     <PackageReference Include="Amazon.Lambda.AspNetCoreServer" Version="7.2.0" />
     <PackageReference Include="Amazon.Lambda.Serialization.Json" Version="2.1.0" />
     <PackageReference Include="Amazon.Lambda.SQSEvents" Version="2.1.0" />
+    <PackageReference Include="Amazon.Lambda.SNSEvents" Version="2.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="3.1.30" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
 

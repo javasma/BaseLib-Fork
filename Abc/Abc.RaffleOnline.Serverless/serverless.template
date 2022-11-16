@@ -5,6 +5,33 @@
   "Parameters": {},
   "Conditions": {},
   "Resources": {
+    "CoreServiceExecutionRole": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Action": [
+                "sts:AssumeRole"
+              ],
+              "Effect": "Allow",
+              "Principal": {
+                "Service": [
+                  "lambda.amazonaws.com"
+                ]
+              }
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AWSLambda_FullAccess",
+          "arn:aws:iam::aws:policy/AmazonSQSFullAccess",
+          "arn:aws:iam::aws:policy/AmazonSNSFullAccess",
+          "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"          
+        ]
+      }
+    },
     "AspNetCoreFunction": {
       "Type": "AWS::Serverless::Function",
       "Properties": {
@@ -13,12 +40,12 @@
         "CodeUri": "",
         "MemorySize": 256,
         "Timeout": 30,
-        "Role": null,
-        "Policies": [
-          "AWSLambda_FullAccess",
-          "AmazonSQSFullAccess",
-          "AmazonSNSFullAccess"
-        ],
+        "Role": {
+          "Fn::GetAtt": [
+            "CoreServiceExecutionRole",
+            "Arn"
+          ]
+        },
         "Events": {
           "ProxyResource": {
             "Type": "Api",
@@ -45,12 +72,12 @@
         "CodeUri": "",
         "MemorySize": 256,
         "Timeout": 30,
-        "Role": null,
-        "Policies": [
-          "AWSLambda_FullAccess",
-          "AmazonSQSFullAccess",
-          "AmazonSNSFullAccess"
-        ],
+        "Role": {
+          "Fn::GetAtt": [
+            "CoreServiceExecutionRole",
+            "Arn"
+          ]
+        },
         "Events": {
           "SQSEvent": {
             "Type": "SQS",
@@ -70,12 +97,12 @@
         "CodeUri": "",
         "MemorySize": 256,
         "Timeout": 30,
-        "Role": null,
-        "Policies": [
-          "AWSLambda_FullAccess",
-          "AmazonSQSFullAccess",
-          "AmazonSNSFullAccess"
-        ],
+        "Role": {
+          "Fn::GetAtt": [
+            "CoreServiceExecutionRole",
+            "Arn"
+          ]
+        },
         "Events": {
           "SQSEvent": {
             "Type": "SQS",
@@ -86,7 +113,7 @@
           }
         }
       },
-      "DependsOn" : "ServiceQueue"
+      "DependsOn": "ServiceQueue"
     },
     "ServiceQueue": {
       "Type": "AWS::SQS::Queue",
