@@ -6,12 +6,14 @@ namespace BaseLib.Core.Services
     {
         string ServiceName { get; set; }
         CoreServiceStatus Status { get; set; }
-        string OperationId { get; set; }
-        string CorrelationId { get; set; }
+
         DateTimeOffset StartedOn { get; set; }
         DateTimeOffset FinishedOn { get; set; }
-        ICoreServiceRequest Request { get; set; }
-        ICoreServiceResponse Response { get; set; }
+
+        string OperationId { get; set; }
+        string CorrelationId { get; set; }
+        object Request { get; set; }
+        object Response { get; set; }
     }
 }
 

@@ -99,7 +99,7 @@ namespace BaseLib.Core.Services
             }
             finally
             {
-                this.status = CoreServiceStatus.Started;
+                this.status = CoreServiceStatus.Finished;
                 this.finishedOn = DateTimeOffset.UtcNow;
 
                 await this.EventSink.WriteAsync(this.GetStatusEvent());
@@ -129,23 +129,6 @@ namespace BaseLib.Core.Services
                 ReasonCode = reasonCode,
                 Messages = messages
             };
-        }
-
-
-        protected virtual CoreServiceState GetServiceState()
-        {
-            var environment = new Dictionary<string, object>{
-                {"ServiceName", this.GetType().Name },
-                {"ServiceStatus", this.status},
-                {"OperationId", this.operationId},
-                {"CorrelationId", this.correlationId},
-                {"StartedOn", this.startedOn},
-                {"FinishedOn", this.finishedOn},
-                {"Request", this.Request},
-                {"Response", this.Response}
-            };
-
-            return new CoreServiceState(environment);
         }
 
         protected virtual ICoreStatusEvent GetStatusEvent()
