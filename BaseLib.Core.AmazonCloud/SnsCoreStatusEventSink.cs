@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
 using BaseLib.Core.Services;
@@ -27,7 +28,11 @@ namespace BaseLib.Core.AmazonCloud
                 MessageGroupId = statusEvent.OperationId,
                 MessageDeduplicationId = $"{statusEvent.OperationId}-{statusEvent.Status}",
                 Message = message,
-                TopicArn = topic.TopicArn
+                TopicArn = topic.TopicArn,
+                MessageAttributes = new Dictionary<string, MessageAttributeValue>{
+                    { "ServiceName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ServiceName } },
+                    { "Status",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.Status.ToString() } }
+                }
             };
 
             await this.sns.PublishAsync(request);
