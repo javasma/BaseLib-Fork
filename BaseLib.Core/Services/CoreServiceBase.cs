@@ -94,7 +94,10 @@ namespace BaseLib.Core.Services
                 {
                     Succeeded = false,
                     ReasonCode = CoreServiceReasonCode.ExceptionHappened,
-                    Messages = new string[] { $"Excepcion of type {ex.GetType().Name} with message {ex.Message} Happened" }
+                    Messages = new string[] { 
+                        $"Excepcion of type {ex.GetType().Name} on {this.GetType().Name} with message {ex.Message} Happened",
+                        ex.StackTrace
+                    }
                 };
             }
             finally
