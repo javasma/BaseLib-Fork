@@ -24,6 +24,8 @@ namespace BaseLib.Core.AmazonCloud
 
             var message = JsonConvert.SerializeObject(statusEvent);
 
+            var response = statusEvent.Response as ICoreServiceResponse;
+
             var request = new PublishRequest{
                 MessageGroupId = statusEvent.OperationId,
                 MessageDeduplicationId = $"{statusEvent.OperationId}-{statusEvent.Status}",
@@ -31,7 +33,10 @@ namespace BaseLib.Core.AmazonCloud
                 TopicArn = topic.TopicArn,
                 MessageAttributes = new Dictionary<string, MessageAttributeValue>{
                     { "ServiceName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ServiceName } },
-                    { "Status",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.Status.ToString() } }
+                    { "Status",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.Status.ToString() } },
+                    { "Succeeded",  new MessageAttributeValue{ DataType = "String", StringValue = response.Succeeded.ToString() } },
+                    { "ReasonCode",  new MessageAttributeValue{ DataType = "String", StringValue = (Convert.ToInt32(response.ReasonCode)).ToString() } }
+
                 }
             };
 
