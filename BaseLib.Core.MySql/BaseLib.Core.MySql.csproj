@@ -3,16 +3,17 @@
 		<TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>BaseLib.Core.MySql</PackageId>
-		<Version>1.0.0-beta-001</Version>
-		<AssemblyVersion>1.0.0.0</AssemblyVersion>
-		<FileVersion>1.1.0.0</FileVersion>		
+		<Version>1.0.0</Version>
+		<AssemblyVersion>1.0.0.1</AssemblyVersion>
+		<FileVersion>1.1.0.1</FileVersion>		
 		<Authors>Mauricio David Obando</Authors>
 		<Company>Mauricio David Obando</Company>
+		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
 	<ItemGroup>
  
 	</ItemGroup>
 	<ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.0.30" />
+    <PackageReference Include="MySql.Data" Version="8.*" />
 	</ItemGroup>
 </Project>

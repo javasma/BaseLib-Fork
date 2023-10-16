@@ -3,16 +3,17 @@
     <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>BaseLib.Core.AmazonCloud</PackageId>
-    <Version>1.1.0-beta-003</Version>
-    <AssemblyVersion>1.1.0.3</AssemblyVersion>
-    <FileVersion>1.1.0.3</FileVersion>
+    <Version>1.1.0</Version>
+    <AssemblyVersion>1.1.0.4</AssemblyVersion>
+    <FileVersion>1.1.0.4</FileVersion>
     <Authors>Mauricio David Obando</Authors>
     <Company>Mauricio David Obando</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.100.14" />
-    <PackageReference Include="AWSSDK.SQS" Version="3.7.2.121" />
-    <PackageReference Include="BaseLib.Core" Version="1.1.0-beta-004      " />
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.200.55" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.7.200.55" />
+    <PackageReference Include="BaseLib.Core" Version="1.1.0" />
   </ItemGroup>
 </Project>
