@@ -11,7 +11,7 @@ namespace BaseLib.Core.Services
          where TResponse : ICoreServiceResponse, new()
     {
         private string operationId;
-        private string correlationId;
+        private string? correlationId;
 
         private TRequest request;
         private TResponse response;
@@ -30,29 +30,29 @@ namespace BaseLib.Core.Services
             set { this.response = value; }
         }
 
-        protected IValidator<TRequest> Validator { get; set; }
+        protected IValidator<TRequest>? Validator { get; set; }
         protected ICoreStatusEventSink EventSink { get; }
 
         protected string OperationId { get { return this.operationId; } }
-        protected string CorrelationId { get { return this.correlationId; } }
+        protected string? CorrelationId { get { return this.correlationId; } }
 
         protected DateTimeOffset StartedOn { get { return this.startedOn; } }
 
         protected DateTimeOffset FinishedOn { get { return this.finishedOn; } }
 
-        public CoreServiceBase(IValidator<TRequest> validator = null, ICoreStatusEventSink eventSink = null)
+        public CoreServiceBase(IValidator<TRequest>? validator = null, ICoreStatusEventSink? eventSink = null)
         {
             this.Validator = validator;
             this.EventSink = eventSink ?? new NullCoreEventSink();
         }
 
-        public async Task<ICoreServiceResponse> RunAsync(ICoreServiceRequest request, string correlationId = null)
+        public async Task<ICoreServiceResponse> RunAsync(ICoreServiceRequest request, string? correlationId = null)
         {
             var response = await RunAsync((TRequest)request, correlationId);
             return response;
         }
 
-        public async Task<TResponse> RunAsync(TRequest request, string correlationId = null)
+        public async Task<TResponse> RunAsync(TRequest request, string? correlationId = null)
         {
             try
             {
@@ -96,7 +96,7 @@ namespace BaseLib.Core.Services
                     ReasonCode = CoreServiceReasonCode.ExceptionHappened,
                     Messages = new string[] { 
                         $"Excepcion of type {ex.GetType().Name} on {this.GetType().Name} with message {ex.Message} Happened",
-                        ex.StackTrace
+                        ex.StackTrace ?? "No StackTrace in exception"
                     }
                 };
             }

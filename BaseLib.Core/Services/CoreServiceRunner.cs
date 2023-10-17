@@ -21,8 +21,13 @@ namespace BaseLib.Core.Services
 
         public Task<ICoreServiceResponse> RunAsync(string body)
         {
-            var payload = JsonConvert.DeserializeObject<Payload>(body);
-            return RunAsync(payload.Service, payload.Request as ICoreServiceRequest);
+            var payload = JsonConvert.DeserializeObject<Payload>(body)
+                ?? throw new NullReferenceException("Unable to deserialize payload");
+            var typeName = payload.Service
+                ?? throw new NullReferenceException("No Service Name on payload");
+            var request = payload.Request as ICoreServiceRequest
+                ?? throw new NullReferenceException("No Request on payload");
+            return RunAsync(typeName, request);
         }
     }
 

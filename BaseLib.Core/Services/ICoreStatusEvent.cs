@@ -11,7 +11,7 @@ namespace BaseLib.Core.Services
         DateTimeOffset FinishedOn { get; set; }
 
         string OperationId { get; set; }
-        string CorrelationId { get; set; }
+        string? CorrelationId { get; set; }
         object Request { get; set; }
         object Response { get; set; }
     }

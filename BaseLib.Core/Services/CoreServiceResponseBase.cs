@@ -7,7 +7,7 @@ namespace BaseLib.Core.Services
     {
         public bool Succeeded { get; set; }
         public Enum ReasonCode { get; set; }
-        public string Reason { get { return this.ReasonCode?.GetDescription(); } }
+        public string Reason { get { return this.ReasonCode.GetDescription(); } }
         public string[] Messages { get; set; }
 
         
@@ -15,7 +15,7 @@ namespace BaseLib.Core.Services
 
     public static class CoreServiceResponseFactory
     {
-        public static TResponse Succeed<TResponse>(Enum reasonCode = null, params string[] messages)
+        public static TResponse Succeed<TResponse>(Enum? reasonCode = null, params string[] messages)
             where TResponse : ICoreServiceResponse, new()
         {
             return new TResponse
@@ -26,7 +26,7 @@ namespace BaseLib.Core.Services
             };
         }
 
-        public static TResponse Fail<TResponse>(Enum reasonCode = null, params string[] messages)
+        public static TResponse Fail<TResponse>(Enum? reasonCode = null, params string[] messages)
             where TResponse : ICoreServiceResponse, new()
         {
             return new TResponse
