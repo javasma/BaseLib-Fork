@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseLib.Core.MySql", "BaseL
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseLib.Core.AmazonCloud", "BaseLib.Core.AmazonCloud\BaseLib.Core.AmazonCloud.csproj", "{A08063F2-A6E0-4266-91F9-C2CE3C428362}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseLib.Core", "BaseLib.Core\BaseLib.Core.csproj", "{8EFF793E-0D44-454C-A731-95E61BD9F6E2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A08063F2-A6E0-4266-91F9-C2CE3C428362}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A08063F2-A6E0-4266-91F9-C2CE3C428362}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A08063F2-A6E0-4266-91F9-C2CE3C428362}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EFF793E-0D44-454C-A731-95E61BD9F6E2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EFF793E-0D44-454C-A731-95E61BD9F6E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EFF793E-0D44-454C-A731-95E61BD9F6E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EFF793E-0D44-454C-A731-95E61BD9F6E2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
