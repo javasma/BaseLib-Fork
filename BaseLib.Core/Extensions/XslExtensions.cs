@@ -7,7 +7,7 @@ namespace BaseLib.Core.Extensions
 {
     public static class XslExtensions
     {
-        public static Stream Transform(this XslCompiledTransform xslt, Stream source, XsltArgumentList arguments = null)
+        public static Stream Transform(this XslCompiledTransform xslt, Stream source, XsltArgumentList? arguments = null)
         {
             var output = new MemoryStream();
             using (var sourceReader = XmlReader.Create(source))
