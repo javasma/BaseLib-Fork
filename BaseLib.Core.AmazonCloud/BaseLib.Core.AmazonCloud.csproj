@@ -1,6 +1,8 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netcoreapp3.1</TargetFrameworks>
+		<TargetFramework>net6.0</TargetFramework>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>BaseLib.Core.AmazonCloud</PackageId>
     <Version>1.1.0</Version>
@@ -12,8 +14,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.7.200.55" />
-    <PackageReference Include="AWSSDK.SQS" Version="3.7.200.55" />
-    <PackageReference Include="BaseLib.Core" Version="1.1.0" />
+    <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.*" />
+    <PackageReference Include="AWSSDK.SQS" Version="3.*" />
+    <PackageReference Include="BaseLib.Core" Version="2.*" />
   </ItemGroup>
 </Project>

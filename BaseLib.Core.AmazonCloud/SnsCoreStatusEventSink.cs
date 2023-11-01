@@ -35,15 +35,12 @@ namespace BaseLib.Core.AmazonCloud
                 MessageAttributes = new Dictionary<string, MessageAttributeValue>{
                     { "ServiceName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ServiceName } },
                     { "Status",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.Status.ToString() } },
-                    { "Succeeded",  new MessageAttributeValue{ DataType = "String", StringValue = response.Succeeded.ToString() } },
-                    { "ReasonCode",  new MessageAttributeValue{ DataType = "String", StringValue = (Convert.ToInt32(response.ReasonCode)).ToString() } }
-
+                    { "Succeeded",  new MessageAttributeValue{ DataType = "String", StringValue = response?.Succeeded.ToString() } },
+                    { "ReasonCode",  new MessageAttributeValue{ DataType = "String", StringValue = Convert.ToInt32(response?.ReasonCode).ToString() } }
                 }
             };
 
             await this.sns.PublishAsync(request);
-            
-
         }
     }
 }
