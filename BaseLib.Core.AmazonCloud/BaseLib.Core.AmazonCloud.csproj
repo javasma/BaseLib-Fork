@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="AWSSDK.KeyManagementService" Version="3.*" />
+    <PackageReference Include="AWSSDK.SecretsManager" Version="3.*" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.*" />
     <PackageReference Include="AWSSDK.SQS" Version="3.*" />
     <PackageReference Include="BaseLib.Core" Version="2.*" />
