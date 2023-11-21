@@ -16,7 +16,7 @@ namespace BaseLib.Core.AmazonCloud
             this.queueName = queueName;
         }
 
-        public async Task FireAsync<TService>(ICoreServiceRequest request) 
+        public async Task FireAsync<TService>(ICoreServiceRequest request, string? correlationId = null)
             where TService : ICoreServiceBase
         {
             var r = await sqs.GetQueueUrlAsync(this.queueName);
@@ -25,7 +25,8 @@ namespace BaseLib.Core.AmazonCloud
             var message = new
             {
                 Service = typeof(TService).FullName,
-                Request = request
+                Request = request,
+                CorrelationId = correlationId
             };
 
             var messageBody = JsonConvert.SerializeObject(message, Formatting.Indented);
