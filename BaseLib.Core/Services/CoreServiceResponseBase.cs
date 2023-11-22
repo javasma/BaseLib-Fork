@@ -6,11 +6,10 @@ namespace BaseLib.Core.Services
     public abstract class CoreServiceResponseBase : ICoreServiceResponse
     {
         public bool Succeeded { get; set; }
-        public Enum ReasonCode { get; set; }
-        public string Reason { get { return this.ReasonCode.GetDescription(); } }
-        public string[] Messages { get; set; }
+        public Enum? ReasonCode { get; set; }
+        public string? Reason { get { return this.ReasonCode?.GetDescription(); } }
+        public string[] Messages { get; set; } = Array.Empty<string>();
 
-        
     }
 
     public static class CoreServiceResponseFactory

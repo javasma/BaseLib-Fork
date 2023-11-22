@@ -10,21 +10,21 @@ namespace BaseLib.Core.Services
          where TRequest : ICoreServiceRequest
          where TResponse : ICoreServiceResponse, new()
     {
-        private string operationId;
+        private string? operationId;
         private string? correlationId;
 
-        private TRequest request;
-        private TResponse response;
         private DateTimeOffset startedOn;
         private DateTimeOffset finishedOn;
         private CoreServiceStatus status;
 
-        protected TRequest Request
+        private TRequest? request;
+        protected TRequest? Request
         {
             get { return this.request; }
         }
 
-        protected TResponse Response
+        private TResponse? response;
+        protected TResponse? Response
         {
             get { return this.response; }
             set { this.response = value; }
@@ -33,7 +33,7 @@ namespace BaseLib.Core.Services
         protected IValidator<TRequest>? Validator { get; set; }
         protected ICoreStatusEventSink EventSink { get; }
 
-        protected string OperationId { get { return this.operationId; } }
+        protected string? OperationId { get { return this.operationId; } }
         protected string? CorrelationId { get { return this.correlationId; } }
 
         protected DateTimeOffset StartedOn { get { return this.startedOn; } }
@@ -64,7 +64,7 @@ namespace BaseLib.Core.Services
 
                 await this.EventSink.WriteAsync(this.GetStatusEvent());
 
-                if (this.Validator != null)
+                if (this.Validator != null && this.Request != null)
                 {
                     var validationResult = await this.Validator.ValidateAsync(this.Request);
                     if (!validationResult.IsValid)

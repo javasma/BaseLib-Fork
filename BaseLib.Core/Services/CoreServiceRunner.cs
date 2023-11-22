@@ -33,7 +33,7 @@ namespace BaseLib.Core.Services
 
     internal class Payload
     {
-        public string Service { get; set; }
-        public object Request { get; set; }
+        public string? Service { get; set; }
+        public object? Request { get; set; }
     }
 }
