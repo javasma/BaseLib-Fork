@@ -5,19 +5,24 @@
 		<Nullable>enable</Nullable>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <PackageId>BaseLib.Core.AmazonCloud</PackageId>
-    <Version>2.0.2</Version>
-    <AssemblyVersion>2.0.2</AssemblyVersion>
-    <FileVersion>2.0.2</FileVersion>
+    <Version>2.0.3</Version>
+    <AssemblyVersion>2.0.3.2</AssemblyVersion>
+    <FileVersion>2.0.3.2</FileVersion>
     <Authors>Mauricio David Obando</Authors>
     <Company>Mauricio David Obando</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Amazon.Lambda.ApplicationLoadBalancerEvents" Version="2.2.0" />
     <PackageReference Include="AWSSDK.KeyManagementService" Version="3.*" />
     <PackageReference Include="AWSSDK.SecretsManager" Version="3.*" />
     <PackageReference Include="AWSSDK.SimpleNotificationService" Version="3.*" />
     <PackageReference Include="AWSSDK.SQS" Version="3.*" />
     <PackageReference Include="BaseLib.Core" Version="2.*" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Extensions/" />
   </ItemGroup>
 </Project>
