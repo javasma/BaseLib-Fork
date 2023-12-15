@@ -9,9 +9,28 @@
                 "build",
                 "${workspaceFolder}/BaseLib.sln",
                 "/property:GenerateFullPaths=true",
-                "/consoleloggerparameters:NoSummary"
+                "/consoleloggerparameters:NoSummary;ForceNoAlign"
+            ],
+            "problemMatcher": "$msCompile",
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "pack",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "pack",
+                "${workspaceFolder}/BaseLib.sln", 
+                "-o",
+                "${workspaceFolder}/../nugetpackages", 
+                "-c",
+                "Debug"
             ],
             "problemMatcher": "$msCompile"
         }
+        
     ]
 }
