@@ -1,9 +1,8 @@
 using Amazon.KeyManagementService;
 using Amazon.KeyManagementService.Model;
 using System.Security.Cryptography;
-using BaseLib.Core.Services;
 
-namespace BaseLib.Core.AmazonCloud 
+namespace BaseLib.Core.Services.AmazonCloud 
 {
     public class KmsCryptoService : ICoreCryptoService
     {

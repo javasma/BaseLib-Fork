@@ -1,9 +1,7 @@
-using System.Threading.Tasks;
 using Amazon.SQS;
-using BaseLib.Core.Services;
 using Newtonsoft.Json;
 
-namespace BaseLib.Core.AmazonCloud
+namespace BaseLib.Core.Services.AmazonCloud
 {
     public class SqsCoreServiceFireOnly : ICoreServiceFireOnly
     {
