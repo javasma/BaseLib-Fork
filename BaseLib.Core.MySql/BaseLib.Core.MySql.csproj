@@ -3,19 +3,22 @@
 		<TargetFramework>net6.0</TargetFramework>
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
-		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 		<PackageId>BaseLib.Core.MySql</PackageId>
-		<Version>2.0.0</Version>
-		<AssemblyVersion>2.0.0.0</AssemblyVersion>
-		<FileVersion>2.0.0.0</FileVersion>		
+		<Version>2.0.1-beta-001</Version>
 		<Authors>Mauricio David Obando</Authors>
 		<Company>Mauricio David Obando</Company>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
 	</PropertyGroup>
-	<ItemGroup>
- 
+
+	<ItemGroup Condition="'$(UseNuGetPackages)' != 'true'">
+		<ProjectReference Include="..\BaseLib.Core\BaseLib.Core.csproj" />
 	</ItemGroup>
+
+	<ItemGroup Condition="'$(UseNuGetPackages)' == 'true'">
+		<PackageReference Include="BaseLib.Core" Version="2.*" />
+	</ItemGroup>
+
 	<ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.*" />
+		<PackageReference Include="MySql.Data" Version="8.*" />
 	</ItemGroup>
 </Project>

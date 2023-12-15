@@ -2,8 +2,16 @@
 
 namespace MySql.Data.MySqlClient
 {
-    public static class MySqlConnectionExtensions
+    public static class MySqlExtensionsEx
     {
+        private readonly static string[] transientMessages = new string[]{
+            "Reading from the stream",
+            "Fatal error",
+            "Timeout expired",
+            "Unable to connect",
+            "Deadlock found"
+        };
+        
         public static void SetWaitTimeout(this MySqlConnection connection, int timeout)
         {
             using( var command = new MySqlCommand($"SET session wait_timeout={timeout};", connection))
@@ -23,6 +31,19 @@ namespace MySql.Data.MySqlClient
                 }
                 return 0;
             }
+        }
+
+        public static bool IsTransient(this MySqlException ex)
+        {
+            var message = ex.Message;
+            bool isTransient =
+                transientMessages.Any(s => message.Contains(s, StringComparison.InvariantCultureIgnoreCase));
+            return isTransient;
+        }
+
+        public static bool IsDuplicate(this MySqlException ex)
+        {
+            return ex.Message.Contains("duplicate");
         }
     }
 }
