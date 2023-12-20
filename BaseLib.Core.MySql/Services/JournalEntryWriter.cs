@@ -51,7 +51,7 @@ namespace BaseLib.Core.Services.MySql
             this.connection = connection;
         }
 
-        public async Task<int> WriteAsync(IJournalEntry entry)
+        public async Task<int> WriteAsync(JournalEntry entry)
         {
             if (entry.Status == CoreServiceStatus.Started)
             {
@@ -74,7 +74,7 @@ namespace BaseLib.Core.Services.MySql
         /// <summary>
         /// Insert the entry, if already exists returns 0
         /// </summary>
-        private Task<int> InsertAsync(IJournalEntry entry)
+        private Task<int> InsertAsync(JournalEntry entry)
         {
             try
             {
@@ -86,8 +86,8 @@ namespace BaseLib.Core.Services.MySql
                     command.Parameters.AddWithValue("STARTED_ON", entry.StartedOn);
                     command.Parameters.AddWithValue("FINISHED_ON", entry.FinishedOn);
                     command.Parameters.AddWithValue("SUCCEEDED", entry.Succeeded);
-                    command.Parameters.AddWithValue("REASON_CODE", entry.ReasonCode);
-                    command.Parameters.AddWithValue("REASON", entry.Reason);
+                    command.Parameters.AddWithValue("REASON_CODE", entry.ReasonCode.Value);
+                    command.Parameters.AddWithValue("REASON", entry.ReasonCode.Description);
                     command.Parameters.AddWithValue("MESSAGES", string.Join("\r\n", entry.Messages));
 
                     return command.ExecuteNonQueryAsync();
@@ -103,15 +103,15 @@ namespace BaseLib.Core.Services.MySql
         /// <summary>
         /// Updates the entry
         /// </summary>
-        private Task<int> UpdateAsync(IJournalEntry entry)
+        private Task<int> UpdateAsync(JournalEntry entry)
         {
             using (var command = new MySqlCommand(updateSql, connection))
             {
                 command.Parameters.AddWithValue("OPERATION_ID", entry.OperationId);
                 command.Parameters.AddWithValue("FINISHED_ON", entry.FinishedOn.ToString("yyyy-MM-dd hh:mm:ss.fff"));
                 command.Parameters.AddWithValue("SUCCEEDED", entry.Succeeded);
-                command.Parameters.AddWithValue("REASON_CODE", entry.ReasonCode);
-                command.Parameters.AddWithValue("REASON", entry.Reason);
+                command.Parameters.AddWithValue("REASON_CODE", entry.ReasonCode.Value);
+                command.Parameters.AddWithValue("REASON", entry.ReasonCode.Description);
                 command.Parameters.AddWithValue("MESSAGES", string.Join("\r\n", entry.Messages));
 
                 return command.ExecuteNonQueryAsync();
