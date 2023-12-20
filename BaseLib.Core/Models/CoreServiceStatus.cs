@@ -1,4 +1,4 @@
-namespace BaseLib.Core.Services
+namespace BaseLib.Core.Models
 {
     public enum CoreServiceStatus
     {

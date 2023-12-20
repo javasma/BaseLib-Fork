@@ -1,14 +1,11 @@
-﻿using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using BaseLib.Core.Models;
+using FluentValidation;
 
 namespace BaseLib.Core.Services
 {
     public abstract partial class CoreServiceBase<TRequest, TResponse> : ICoreServiceBase<TRequest, TResponse>
-         where TRequest : ICoreServiceRequest
-         where TResponse : ICoreServiceResponse, new()
+         where TRequest : CoreServiceRequestBase
+         where TResponse : CoreServiceResponseBase, new()
     {
         private string? operationId;
         private string? correlationId;
@@ -46,7 +43,7 @@ namespace BaseLib.Core.Services
             this.EventSink = eventSink ?? new NullCoreEventSink();
         }
 
-        public async Task<ICoreServiceResponse> RunAsync(ICoreServiceRequest request, string? correlationId = null)
+        public async Task<CoreServiceResponseBase> RunAsync(CoreServiceRequestBase request, string? correlationId = null)
         {
             var response = await RunAsync((TRequest)request, correlationId);
             return response;
@@ -83,7 +80,7 @@ namespace BaseLib.Core.Services
                 //No hay validación o la validación fue exitosa
                 this.response = await RunAsync();
 
-                if (this.response.ReasonCode == null)
+                if (this.response.ReasonCode == CoreServiceReasonCode.Undefined)
                 {
                     this.response.ReasonCode = this.response.Succeeded ? CoreServiceReasonCode.Succeeded : CoreServiceReasonCode.Failed;
                 }
@@ -134,7 +131,7 @@ namespace BaseLib.Core.Services
             };
         }
 
-        protected virtual ICoreStatusEvent GetStatusEvent()
+        protected virtual CoreStatusEvent GetStatusEvent()
         {
             return new CoreStatusEvent
             {

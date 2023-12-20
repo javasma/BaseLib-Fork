@@ -4,6 +4,9 @@ namespace BaseLib.Core.Services
 {
     public enum CoreServiceReasonCode
     {
+        [Description("Undefined")]
+        Undefined = 1,
+
         [Description("Operación exitosa")]
         Succeeded = 1,
 

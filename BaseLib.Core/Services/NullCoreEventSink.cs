@@ -1,10 +1,10 @@
-using System.Threading.Tasks;
+using BaseLib.Core.Models;
 
 namespace BaseLib.Core.Services
 {
     public class NullCoreEventSink : ICoreStatusEventSink
     {
-        public Task WriteAsync(ICoreStatusEvent statusEvent)
+        public Task WriteAsync(CoreStatusEvent statusEvent)
         {
              return Task.CompletedTask;
         }

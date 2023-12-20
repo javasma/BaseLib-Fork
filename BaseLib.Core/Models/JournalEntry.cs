@@ -1,8 +1,6 @@
-using BaseLib.Core.Services;
-
 namespace BaseLib.Core.Models
 {
-    public class JournalEntry : IJournalEntry
+    public class JournalEntry 
     {
         public string? ServiceName { get; set; }
 
@@ -16,8 +14,8 @@ namespace BaseLib.Core.Models
 
         public string? CorrelationId { get; set; }
         public bool Succeeded { get; set; }
-        public int ReasonCode { get; set; }
-        public string? Reason { get; set; }
+        public CoreReasonCode ReasonCode { get; set; } = CoreReasonCode.Null;
+        
         public string[] Messages { get; set; } = Array.Empty<string>();
     }
 

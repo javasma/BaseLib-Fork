@@ -1,9 +1,8 @@
-using System;
-using System.Collections.Generic;
+using BaseLib.Core.Models;
 
 namespace BaseLib.Core.Services
 {
-    public class CoreServiceState : ICoreServiceState
+    public class CoreServiceState 
     {
         private readonly IDictionary<string, object> environment;
 
@@ -20,9 +19,9 @@ namespace BaseLib.Core.Services
 
         public string? CorrelationId => this.Get<string?>("CorrelationId");
 
-        public ICoreServiceRequest? Request => this.Get<ICoreServiceRequest?>("Request");
+        public CoreServiceRequestBase? Request => this.Get<CoreServiceRequestBase?>("Request");
 
-        public ICoreServiceResponse? Response => this.Get<ICoreServiceResponse?>("Response");
+        public CoreServiceResponseBase? Response => this.Get<CoreServiceResponseBase?>("Response");
 
         public virtual T? Get<T>(string key)
         {

@@ -1,3 +1,5 @@
+using BaseLib.Core.Models;
+
 namespace BaseLib.Core.Services
 {
     /// <summary>
@@ -5,8 +7,8 @@ namespace BaseLib.Core.Services
     /// </summary>
     public interface ICoreStatusEventStore
     {
-        Task<int> WriteAsync(ICoreStatusEvent statusEvent);
-        Task<ICoreStatusEvent> ReadAsync(string correlationId);
+        Task<int> WriteAsync(CoreStatusEvent statusEvent);
+        Task<CoreStatusEvent> ReadAsync(string correlationId);
 
     }
 }

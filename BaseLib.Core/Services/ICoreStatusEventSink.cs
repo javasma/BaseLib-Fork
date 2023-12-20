@@ -1,9 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using BaseLib.Core.Models;
 
 namespace BaseLib.Core.Services
 {
     public interface ICoreStatusEventSink
     {
-        Task WriteAsync(ICoreStatusEvent statusEvent);
+        Task WriteAsync(CoreStatusEvent statusEvent);
     }
 }

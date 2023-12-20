@@ -1,16 +1,15 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using BaseLib.Core.Models;
 
 namespace BaseLib.Core.Services
 {
     public interface ICoreServiceBase
     {
-        Task<ICoreServiceResponse> RunAsync(ICoreServiceRequest request, string? correlationId = null);
+        Task<CoreServiceResponseBase> RunAsync(CoreServiceRequestBase request, string? correlationId = null);
     }
 
     public interface ICoreServiceBase<TRequest, TResponse> : ICoreServiceBase
-        where TRequest : ICoreServiceRequest
-        where TResponse : ICoreServiceResponse, new()
+        where TRequest : CoreServiceRequestBase
+        where TResponse : CoreServiceResponseBase, new()
     {
         Task<TResponse> RunAsync(TRequest request, string? correlationId = null);
     }

@@ -4,6 +4,6 @@ namespace BaseLib.Core.Services
 {
     public interface IJournalEntryWriter
     {
-        Task<int> WriteAsync(IJournalEntry entry);
+        Task<int> WriteAsync(JournalEntry entry);
     }
 }

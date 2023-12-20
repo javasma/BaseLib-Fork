@@ -1,5 +1,5 @@
+using System.Text.Json;
 using BaseLib.Core.Models;
-using Newtonsoft.Json;
 
 namespace BaseLib.Core.Services
 {
@@ -17,11 +17,11 @@ namespace BaseLib.Core.Services
             this.eventStore = eventStore;
         }
 
-        public async Task<int> HandleAsync(ICoreStatusEvent statusEvent)
+        public async Task<int> HandleAsync(CoreStatusEvent statusEvent)
         {
             if (statusEvent.Status == CoreServiceStatus.Finished)
             {
-                JournalEntry journalEntry = MapJournalEntry(statusEvent);
+                var journalEntry = MapJournalEntry(statusEvent);
 
                 await journalWriter.WriteAsync(journalEntry);
 
@@ -32,10 +32,10 @@ namespace BaseLib.Core.Services
             return 0;
         }
 
-        private JournalEntry MapJournalEntry(ICoreStatusEvent statusEvent)
+        private JournalEntry MapJournalEntry(CoreStatusEvent statusEvent)
         {
             //TODO, serialization of the event 
-            var partialResponse = JsonConvert.DeserializeObject<PartialResponse>(JsonConvert.SerializeObject(statusEvent.Response)) ?? new PartialResponse();
+            var partialResponse = JsonSerializer.Deserialize<PartialResponse>(JsonSerializer.Serialize(statusEvent.Response)) ?? new PartialResponse();
 
             return new JournalEntry
             {
@@ -47,8 +47,7 @@ namespace BaseLib.Core.Services
                 CorrelationId = statusEvent.CorrelationId,
                 Succeeded = partialResponse.Succeeded,
                 ReasonCode = partialResponse.ReasonCode,
-                Reason = partialResponse.Reason,
-                Messages = partialResponse.Messages ?? new string[0]
+                Messages = partialResponse.Messages ?? Array.Empty<string>()
             };
 
         }
@@ -56,9 +55,8 @@ namespace BaseLib.Core.Services
         private class PartialResponse
         {
             public bool Succeeded { get; set; }
-            public string? Reason { get; set; }
             public string[]? Messages { get; set; }
-            public int ReasonCode { get; set; }
+            public CoreReasonCode ReasonCode { get; set; } = CoreReasonCode.Null;
             public string? TransactionId { get; set; }
         }
     }

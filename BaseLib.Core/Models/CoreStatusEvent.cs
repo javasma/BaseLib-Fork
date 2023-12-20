@@ -1,14 +1,8 @@
-using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Converters;
-
-namespace BaseLib.Core.Services
+namespace BaseLib.Core.Models
 {
-    public class CoreStatusEvent : ICoreStatusEvent
+    public class CoreStatusEvent 
     {
         public string? ServiceName { get; set; }
-        [JsonConverter(typeof(StringEnumConverter))]
         public CoreServiceStatus Status { get; set; }
         public DateTimeOffset StartedOn { get; set; }
         public DateTimeOffset FinishedOn { get; set; }
