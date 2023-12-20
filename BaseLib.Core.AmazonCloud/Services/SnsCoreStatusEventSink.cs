@@ -1,13 +1,19 @@
-﻿using Amazon.SimpleNotificationService;
+﻿using BaseLib.Core.Models;
+using System.Text.Json;
+using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
-using Newtonsoft.Json;
 
 namespace BaseLib.Core.Services.AmazonCloud
 {
+    /// <summary>
+    /// Sns Implementation of ICoreStatusEventSink, Writes serialized event to an AWS SNS Topic
+    /// Use as a singleton is suggested.
+    /// </summary>
     public class SnsCoreStatusEventSink : ICoreStatusEventSink
     {
         private readonly IAmazonSimpleNotificationService sns;
         private readonly string topicName;
+        private Topic? topic;
 
         public SnsCoreStatusEventSink(IAmazonSimpleNotificationService sns, string topicName)
         {
@@ -15,15 +21,15 @@ namespace BaseLib.Core.Services.AmazonCloud
             this.topicName = topicName;
         }
 
-        public async Task WriteAsync(ICoreStatusEvent statusEvent)
+        public async Task WriteAsync(CoreStatusEvent statusEvent)
         {
+            this.topic ??= await this.sns.FindTopicAsync(this.topicName);
+
             try
             {             
-                var topic = await this.sns.FindTopicAsync(this.topicName);
-             
-                var message = JsonConvert.SerializeObject(statusEvent);
+                var message = JsonSerializer.Serialize(statusEvent);
 
-                var response = statusEvent.Response as ICoreServiceResponse;
+                var response = statusEvent.Response as CoreServiceResponseBase;
 
                 var request = new PublishRequest
                 {
@@ -31,12 +37,11 @@ namespace BaseLib.Core.Services.AmazonCloud
                     MessageDeduplicationId = $"{statusEvent.OperationId}-{statusEvent.Status}",
                     Message = message,
                     TopicArn = topic.TopicArn,
-                    MessageAttributes = new Dictionary<string, MessageAttributeValue>
-                    {
+                    MessageAttributes = new Dictionary<string, MessageAttributeValue>                    {
                         { "ServiceName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ServiceName } },
                         { "Status",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.Status.ToString() } },
-                        { "Succeeded",  new MessageAttributeValue{ DataType = "String", StringValue = response !=null ? response.Succeeded.ToString() : "False" } },
-                        { "ReasonCode",  new MessageAttributeValue{ DataType = "String", StringValue = response!=null ? Convert.ToInt32(response.ReasonCode).ToString() : "0" } }
+                        { "Succeeded",  new MessageAttributeValue{ DataType = "String", StringValue = response != null ? response.Succeeded.ToString() : "False" } },
+                        { "ReasonCode",  new MessageAttributeValue{ DataType = "String", StringValue = response != null ? response.ReasonCode.Value.ToString() : "0" } }
                     }
                 };
 

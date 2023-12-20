@@ -1,6 +1,7 @@
+using System.Text.Json;
 using Amazon.S3;
 using Amazon.S3.Model;
-using Newtonsoft.Json;
+using BaseLib.Core.Models;
 
 namespace BaseLib.Core.Services.AmazonCloud
 {
@@ -20,16 +21,16 @@ namespace BaseLib.Core.Services.AmazonCloud
             this.folderName = folderName;
         }
 
-        public Task<ICoreStatusEvent> ReadAsync(string correlationId)
+        public Task<CoreStatusEvent> ReadAsync(string correlationId)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<int> WriteAsync(ICoreStatusEvent statusEvent)
+        public async Task<int> WriteAsync(CoreStatusEvent statusEvent)
         {
             var keyName = $"{folderName}/{statusEvent.OperationId}.json";
 
-            var s = JsonConvert.SerializeObject(statusEvent, Formatting.Indented);
+            var s = JsonSerializer.Serialize(statusEvent);
 
             using (var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(s)))
             {
