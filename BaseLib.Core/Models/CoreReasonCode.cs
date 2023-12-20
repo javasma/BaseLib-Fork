@@ -6,13 +6,20 @@ namespace BaseLib.Core.Models
         public static CoreReasonCode Null { get { return new CoreReasonCode(0, "Undefined"); } }
 
         public static implicit operator CoreReasonCode(Enum enumValue)
-            => new CoreReasonCode(Convert.ToInt32(enumValue), enumValue.ToString());
+            => new CoreReasonCode(Convert.ToInt32(enumValue), enumValue.GetDescription());
 
         public static bool operator ==(CoreReasonCode reasonCode, Enum enumValue)
             => reasonCode.Value == Convert.ToInt32(enumValue);
 
         public static bool operator !=(CoreReasonCode reasonCode, Enum enumValue)
             => !(reasonCode == enumValue);
+
+        public static bool operator ==(CoreReasonCode reasonCode, Int32 intValue)
+            => reasonCode.Value == intValue;
+
+        public static bool operator !=(CoreReasonCode reasonCode, Int32 intValue)
+            => !(reasonCode == intValue);
+
 
         public static explicit operator int(CoreReasonCode reasonCode)
             => reasonCode.Value;
