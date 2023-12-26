@@ -1,9 +1,13 @@
 ﻿
+using BaseLib.Core.Services;
+
 namespace BaseLib.Core.Models
 {
     public record CoreReasonCode(int Value, string Description) : IConvertible
     {
-        public static CoreReasonCode Null { get { return new CoreReasonCode(0, "Undefined"); } }
+        public static CoreReasonCode Null { get { return CoreServiceReasonCode.Undefined; } }
+        public static CoreReasonCode Succeeded { get { return CoreServiceReasonCode.Succeeded; } }
+        public static CoreReasonCode Failed { get { return CoreServiceReasonCode.Failed; } }
 
         public static implicit operator CoreReasonCode(Enum enumValue)
             => new CoreReasonCode(Convert.ToInt32(enumValue), enumValue.GetDescription());

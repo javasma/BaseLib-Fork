@@ -121,13 +121,12 @@ namespace BaseLib.Core.Services
             };
         }
 
-        public TResponse Succeed(Enum reasonCode, params string[] messages)
+        public TResponse Succeed(Enum? reasonCode = null, params string[] messages)
         {
             return new TResponse
             {
                 Succeeded = true,
-                ReasonCode = reasonCode,
-                Messages = messages
+                ReasonCode = reasonCode ?? CoreServiceReasonCode.Succeeded
             };
         }
 
