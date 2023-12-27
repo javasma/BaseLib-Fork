@@ -1,5 +1,5 @@
 using BaseLib.Core.Models;
-using System.Text.Json;
+using BaseLib.Core.Serialization;
 
 namespace BaseLib.Core.Services
 {
@@ -12,19 +12,19 @@ namespace BaseLib.Core.Services
             this.serviceFactory = serviceFactory;
         }
 
-        public Task<CoreServiceResponseBase> RunAsync(string typeName, CoreServiceRequestBase request)
+        public Task<CoreResponseBase> RunAsync(string typeName, CoreRequestBase request)
         {
             var service = this.serviceFactory.Invoke(typeName);
             return service.RunAsync(request);
         }
 
-        public Task<CoreServiceResponseBase> RunAsync(string body)
+        public Task<CoreResponseBase> RunAsync(string body)
         {
-            var payload = JsonSerializer.Deserialize<Payload>(body)
+            var payload = CoreSerializer.Deserialize<Payload>(body)
                 ?? throw new NullReferenceException("Unable to deserialize payload");
             var typeName = payload.Service
                 ?? throw new NullReferenceException("No Service Name on payload");
-            var request = payload.Request as CoreServiceRequestBase
+            var request = payload.Request
                 ?? throw new NullReferenceException("No Request on payload");
             return RunAsync(typeName, request);
         }
@@ -33,6 +33,6 @@ namespace BaseLib.Core.Services
     internal class Payload
     {
         public string? Service { get; set; }
-        public object? Request { get; set; }
+        public CoreRequestBase? Request { get; set; }
     }
 }

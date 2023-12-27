@@ -1,4 +1,4 @@
-namespace BaseLib.Core.Services
+namespace BaseLib.Core.Security
 {
     public interface ICoreSecretsVault
     {

@@ -1,7 +1,7 @@
 ﻿using BaseLib.Core.Models;
-using System.Text.Json;
 using Amazon.SimpleNotificationService;
 using Amazon.SimpleNotificationService.Model;
+using BaseLib.Core.Serialization;
 
 namespace BaseLib.Core.Services.AmazonCloud
 {
@@ -27,9 +27,9 @@ namespace BaseLib.Core.Services.AmazonCloud
 
             try
             {             
-                var message = JsonSerializer.Serialize(statusEvent);
+                var message = CoreSerializer.Serialize(statusEvent);
 
-                var response = statusEvent.Response as CoreServiceResponseBase;
+                var response = statusEvent.Response as CoreResponseBase;
 
                 var request = new PublishRequest
                 {

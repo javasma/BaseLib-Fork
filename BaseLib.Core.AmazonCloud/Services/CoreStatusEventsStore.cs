@@ -1,7 +1,7 @@
-using System.Text.Json;
 using Amazon.S3;
 using Amazon.S3.Model;
 using BaseLib.Core.Models;
+using BaseLib.Core.Serialization;
 
 namespace BaseLib.Core.Services.AmazonCloud
 {
@@ -30,7 +30,7 @@ namespace BaseLib.Core.Services.AmazonCloud
         {
             var keyName = $"{folderName}/{statusEvent.OperationId}.json";
 
-            var s = JsonSerializer.Serialize(statusEvent);
+            var s = CoreSerializer.Serialize(statusEvent);
 
             using (var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(s)))
             {

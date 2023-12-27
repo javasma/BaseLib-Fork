@@ -19,9 +19,9 @@ namespace BaseLib.Core.Services
 
         public string? CorrelationId => this.Get<string?>("CorrelationId");
 
-        public CoreServiceRequestBase? Request => this.Get<CoreServiceRequestBase?>("Request");
+        public CoreRequestBase? Request => this.Get<CoreRequestBase?>("Request");
 
-        public CoreServiceResponseBase? Response => this.Get<CoreServiceResponseBase?>("Response");
+        public CoreResponseBase? Response => this.Get<CoreResponseBase?>("Response");
 
         public virtual T? Get<T>(string key)
         {

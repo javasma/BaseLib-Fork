@@ -4,8 +4,8 @@ using FluentValidation;
 namespace BaseLib.Core.Services
 {
     public abstract partial class CoreServiceBase<TRequest, TResponse> : ICoreServiceBase<TRequest, TResponse>
-         where TRequest : CoreServiceRequestBase
-         where TResponse : CoreServiceResponseBase, new()
+         where TRequest : CoreRequestBase
+         where TResponse : CoreResponseBase, new()
     {
         private string? operationId;
         private string? correlationId;
@@ -43,7 +43,7 @@ namespace BaseLib.Core.Services
             this.EventSink = eventSink ?? new NullCoreEventSink();
         }
 
-        public async Task<CoreServiceResponseBase> RunAsync(CoreServiceRequestBase request, string? correlationId = null)
+        public async Task<CoreResponseBase> RunAsync(CoreRequestBase request, string? correlationId = null)
         {
             var response = await RunAsync((TRequest)request, correlationId);
             return response;

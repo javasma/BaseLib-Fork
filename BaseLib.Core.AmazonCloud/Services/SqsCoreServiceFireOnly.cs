@@ -1,6 +1,6 @@
-using System.Text.Json;
 using Amazon.SQS;
 using BaseLib.Core.Models;
+using BaseLib.Core.Serialization;
 
 namespace BaseLib.Core.Services.AmazonCloud
 {
@@ -15,7 +15,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             this.queueName = queueName;
         }
 
-        public async Task FireAsync<TService>(CoreServiceRequestBase request, string? correlationId = null)
+        public async Task FireAsync<TService>(CoreRequestBase request, string? correlationId = null)
             where TService : ICoreServiceBase
         {
             var r = await sqs.GetQueueUrlAsync(this.queueName);
@@ -28,7 +28,7 @@ namespace BaseLib.Core.Services.AmazonCloud
                 CorrelationId = correlationId
             };
 
-            var messageBody = JsonSerializer.Serialize(message);
+            var messageBody = CoreSerializer.Serialize(message);
 
             await this.sqs.SendMessageAsync(queueUrl, messageBody);
         }

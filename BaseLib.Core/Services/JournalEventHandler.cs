@@ -1,4 +1,3 @@
-using System.Text.Json;
 using BaseLib.Core.Models;
 
 namespace BaseLib.Core.Services
@@ -34,9 +33,6 @@ namespace BaseLib.Core.Services
 
         private JournalEntry MapJournalEntry(CoreStatusEvent statusEvent)
         {
-            //TODO, serialization of the event 
-            var partialResponse = JsonSerializer.Deserialize<PartialResponse>(JsonSerializer.Serialize(statusEvent.Response)) ?? new PartialResponse();
-
             return new JournalEntry
             {
                 ServiceName = statusEvent.ServiceName,
@@ -45,19 +41,13 @@ namespace BaseLib.Core.Services
                 FinishedOn = statusEvent.FinishedOn,
                 OperationId = statusEvent.OperationId,
                 CorrelationId = statusEvent.CorrelationId,
-                Succeeded = partialResponse.Succeeded,
-                ReasonCode = partialResponse.ReasonCode,
-                Messages = partialResponse.Messages ?? Array.Empty<string>()
+                Succeeded = statusEvent.Response?.Succeeded ?? false,
+                ReasonCode = statusEvent.Response?.ReasonCode ?? CoreReasonCode.Null,
+                Messages = statusEvent.Response?.Messages ?? Array.Empty<string>()
             };
 
         }
 
-        private class PartialResponse
-        {
-            public bool Succeeded { get; set; }
-            public string[]? Messages { get; set; }
-            public CoreReasonCode ReasonCode { get; set; } = CoreReasonCode.Null;
-            public string? TransactionId { get; set; }
-        }
+        
     }
 }

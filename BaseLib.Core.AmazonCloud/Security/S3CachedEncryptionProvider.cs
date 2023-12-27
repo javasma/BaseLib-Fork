@@ -94,7 +94,12 @@ namespace BaseLib.Core.Security.AmazonCloud
 
         public Task<byte[]> UnwrapKeyAsync(byte[] wrappedKey)
         {
-            return this.UnwrapKeyAsync(wrappedKey);
+            if (keyPair != null && keyPair.WrappedKey==wrappedKey)
+            {
+                return Task.FromResult(keyPair.Key);
+            }
+            
+            return this.innerProvider.UnwrapKeyAsync(wrappedKey);
         }
 
         internal record EncryptionKeyPair(byte[] Key, byte[] WrappedKey);

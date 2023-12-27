@@ -1,7 +1,7 @@
 using Amazon.SecretsManager;
 using Amazon.SecretsManager.Model;
 
-namespace BaseLib.Core.Services.AmazonCloud
+namespace BaseLib.Core.Security.AmazonCloud
 {
     public class AmazonSecretsVault : ICoreSecretsVault
     {
