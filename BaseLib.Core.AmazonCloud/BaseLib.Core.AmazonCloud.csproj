@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup Condition="'$(UseNuGetPackages)' == 'true'">
-    <PackageReference Include="BaseLib.Core" Version="2.*" />
+    <PackageReference Include="BaseLib.Core" Version="2.1.*" />
   </ItemGroup>
 
   <ItemGroup>
