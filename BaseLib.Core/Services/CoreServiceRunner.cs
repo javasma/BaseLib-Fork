@@ -34,5 +34,6 @@ namespace BaseLib.Core.Services
     {
         public string? Service { get; set; }
         public CoreRequestBase? Request { get; set; }
+        public string? CorrelationId { get; set; }
     }
 }

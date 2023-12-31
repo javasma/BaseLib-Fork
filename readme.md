@@ -1,21 +1,24 @@
 # BaseLib - Base Architecture Libraries
 
 ## About
-BaseLib is a set of libraries designed for a lightweight architecture in building C# .NET Core backend services. It offers utilities and foundational components to streamline development.
+BaseLib is a set of libraries designed to provide the foundational components to build a lightweight architecture for backend services in C# for .NET Core.
 
 ## Repository Structure
 The BaseLib repository includes:
-- **BaseLib.Core**: The core library for the BaseLib architecture.
-- **BaseLib.Core.AmazonCloud**: Extensions and utilities for Amazon Cloud integration.
-- **BaseLib.Core.MySql**: MySQL support for BaseLib.
+- [BaseLib.Core](BaseLib.Core/readme.md): The core library for the BaseLib architecture.
+- [BaseLib.Core.AmazonCloud](BaseLib.Core.AmazonCloud/readme.md): Extensions and utilities for Amazon Cloud integration.
+- [BaseLib.Core.MySql](BaseLib.Core.MySql/readme.md): MySQL support for BaseLib.
 
 ## Usage
-BaseLib is available as NuGet packages. To use these in your project, add the following packages:
-- `BaseLib.Core`
-- `BaseLib.Core.AmazonCloud`
-- `BaseLib.Core.MySql`
 
-You can install these packages using the NuGet package manager or through the NuGet CLI.
+BaseLib.Core can be installed using the Nuget package manager or the dotnet CLI:
+```
+dotnet add package BaseLib.Core
+dotnet add package BaseLib.Core.AmazonCloud
+dotnet add package BaseLib.Core.MySql
+```
+
+
 
 ## Contributing
 Contributions to BaseLib are welcome. Please submit your pull requests or open issues for discussion.

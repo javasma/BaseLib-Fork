@@ -4,10 +4,13 @@
 		<ImplicitUsings>enable</ImplicitUsings>
 		<Nullable>enable</Nullable>
 		<PackageId>BaseLib.Core.MySql</PackageId>
-		<Version>2.1.0</Version>
+		<Version>2.1.0.1</Version>
 		<Authors>Mauricio David Obando</Authors>
 		<Company>Mauricio David Obando</Company>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+		<RepositoryUrl>https://github.com/mauriciodavid70/BaseLib</RepositoryUrl> 
+		<RepositoryType>git</RepositoryType>
+		<PackageReadmeFile>readme.md</PackageReadmeFile>
 	</PropertyGroup>
 
 	<ItemGroup Condition="'$(UseNuGetPackages)' != 'true'">
@@ -15,10 +18,15 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(UseNuGetPackages)' == 'true'">
-		<PackageReference Include="BaseLib.Core" Version="2.1.*" />
+		<PackageReference Include="BaseLib.Core" Version="2.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="8.*" />
+		<PackageReference Include="MySql.Data" Version="8.0.33" />
 	</ItemGroup>
+
+	<ItemGroup>
+		<None Include="readme.md" Pack="true" PackagePath="\"/>
+	</ItemGroup>
+	
 </Project>
