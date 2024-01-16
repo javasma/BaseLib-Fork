@@ -8,6 +8,9 @@ namespace BaseLib.Core.Models
         public static CoreReasonCode Null { get { return CoreServiceReasonCode.Undefined; } }
         public static CoreReasonCode Succeeded { get { return CoreServiceReasonCode.Succeeded; } }
         public static CoreReasonCode Failed { get { return CoreServiceReasonCode.Failed; } }
+        public CoreReasonCode(): this(CoreServiceReasonCode.Undefined)
+        {
+        }
 
         public static implicit operator CoreReasonCode(Enum enumValue)
             => new CoreReasonCode(Convert.ToInt32(enumValue), enumValue.GetDescription());
