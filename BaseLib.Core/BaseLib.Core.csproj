@@ -1,26 +1,23 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
-
-	<PropertyGroup>
-		<TargetFramework>net6.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<PackageId>BaseLib.Core</PackageId>
-		<Version>2.1.0.2</Version>
-		<Authors>Mauricio David Obando</Authors>
-		<Company>Mauricio David Obando</Company>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<RepositoryUrl>https://github.com/mauriciodavid70/BaseLib</RepositoryUrl> 
-		<RepositoryType>git</RepositoryType> 
-		<PackageReadmeFile>readme.md</PackageReadmeFile>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<None Include="readme.md" Pack="true" PackagePath="\"/>
-		<EmbeddedResource Include="Resources\fix-self-closing-tags.xslt" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<PackageReference Include="FluentValidation" Version="10.4.0" />
-	</ItemGroup>
-
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>BaseLib.Core</PackageId>
+    <Version>2.1.0.3</Version>
+    <Authors>Mauricio David Obando</Authors>
+    <Company>Mauricio David Obando</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/mauriciodavid70/BaseLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="readme.md" Pack="true" PackagePath="\" />
+    <EmbeddedResource Include="Resources\fix-self-closing-tags.xslt" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="10.4.0" />
+    <PackageReference Include="MimeKit" Version="4.5.0" />
+  </ItemGroup>
 </Project>
