@@ -26,7 +26,7 @@ namespace BaseLib.Core.Services.AmazonCloud
             this.topic ??= await this.sns.FindTopicAsync(this.topicName);
 
             try
-            {             
+            {
                 var message = CoreSerializer.Serialize(statusEvent);
 
                 var response = statusEvent.Response as CoreResponseBase;
@@ -37,7 +37,8 @@ namespace BaseLib.Core.Services.AmazonCloud
                     MessageDeduplicationId = $"{statusEvent.OperationId}-{statusEvent.Status}",
                     Message = message,
                     TopicArn = topic.TopicArn,
-                    MessageAttributes = new Dictionary<string, MessageAttributeValue>                    {
+                    MessageAttributes = new Dictionary<string, MessageAttributeValue> {
+                        { "ModuleName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ModuleName } },
                         { "ServiceName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ServiceName } },
                         { "Status",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.Status.ToString() } },
                         { "Succeeded",  new MessageAttributeValue{ DataType = "String", StringValue = response != null ? response.Succeeded.ToString() : "False" } },
