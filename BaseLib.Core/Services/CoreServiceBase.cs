@@ -132,9 +132,13 @@ namespace BaseLib.Core.Services
 
         protected virtual CoreStatusEvent GetStatusEvent()
         {
+            //type of the service
+            var type = this.GetType(); 
+
             return new CoreStatusEvent
             {
-                ServiceName = this.GetType().Name,
+                ModuleName = type.Assembly.GetName().Name,
+                ServiceName = type.Name,
                 Status = this.status,
                 OperationId = this.operationId,
                 CorrelationId = this.correlationId,

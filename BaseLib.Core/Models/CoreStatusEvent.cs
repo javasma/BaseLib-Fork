@@ -2,6 +2,7 @@ namespace BaseLib.Core.Models
 {
     public class CoreStatusEvent
     {
+        public string? ModuleName { get; set; }
         public string? ServiceName { get; set; }
         public CoreServiceStatus Status { get; set; }
         public DateTimeOffset StartedOn { get; set; }
