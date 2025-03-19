@@ -71,7 +71,7 @@ namespace BaseLib.Core.Services
                             //toma el resultado y lo mapea al response
                             Succeeded = false,
                             ReasonCode = CoreServiceReasonCode.ValidationResultNotValid,
-                            Messages = validationResult.Errors.Select(e => e.ErrorMessage).ToArray()
+                            Messages = validationResult.Errors.Select(e => $"Validation error on {e.PropertyName} with message {e.ErrorMessage}").ToArray()
                         };
                         return this.response;
                     }
@@ -92,7 +92,7 @@ namespace BaseLib.Core.Services
                     Succeeded = false,
                     ReasonCode = CoreServiceReasonCode.ExceptionHappened,
                     Messages = new string[] { 
-                        $"Excepcion of type {ex.GetType().Name} on {this.GetType().Name} with message {ex.Message} Happened",
+                        $"Exception of type {ex.GetType().Name} on {this.GetType().Name} with message {ex.Message} Happened",
                         ex.StackTrace ?? "No StackTrace in exception"
                     }
                 };
