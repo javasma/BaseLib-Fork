@@ -1,4 +1,7 @@
+using System.Security.Cryptography;
+using System.Text;
 using Amazon.SQS;
+using Amazon.SQS.Model;
 using BaseLib.Core.Models;
 using BaseLib.Core.Serialization;
 
@@ -30,8 +33,23 @@ namespace BaseLib.Core.Services.AmazonCloud
 
             var messageBody = CoreSerializer.Serialize(message);
 
-            await this.sqs.SendMessageAsync(queueUrl, messageBody);
+            var messageRequest = new SendMessageRequest
+            {
+                MessageBody = messageBody,
+                MessageDeduplicationId = GetMessageDeduplicationId(messageBody),
+                MessageGroupId = correlationId ?? Guid.NewGuid().ToString(),
+                QueueUrl = queueUrl
+            };
+
+            await this.sqs.SendMessageAsync(messageRequest);
+
         }
 
+        private string GetMessageDeduplicationId(string messageBody)
+        {
+            using var md5 = MD5.Create();
+            byte[] hashBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(messageBody));
+            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower(); 
+        }
     }
 }
