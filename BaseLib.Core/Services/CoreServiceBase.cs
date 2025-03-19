@@ -59,7 +59,7 @@ namespace BaseLib.Core.Services
                 this.correlationId = correlationId;
                 this.startedOn = DateTimeOffset.UtcNow;
 
-                await this.EventSink.WriteAsync(this.GetStatusEvent());
+                await this.OnWriteStatusEventAsync();
 
                 if (this.Validator != null && this.Request != null)
                 {
@@ -102,7 +102,7 @@ namespace BaseLib.Core.Services
                 this.status = CoreServiceStatus.Finished;
                 this.finishedOn = DateTimeOffset.UtcNow;
 
-                await this.EventSink.WriteAsync(this.GetStatusEvent());
+                await this.OnWriteStatusEventAsync();
             }
 
             return this.response;
@@ -110,6 +110,11 @@ namespace BaseLib.Core.Services
         }
 
         protected abstract Task<TResponse> RunAsync();
+
+        protected virtual async Task OnWriteStatusEventAsync()
+        {
+            await this.EventSink.WriteAsync(this.GetStatusEvent());
+        }
 
         public TResponse Fail(Enum reasonCode, params string[] messages)
         {
@@ -151,4 +156,3 @@ namespace BaseLib.Core.Services
 
     }
 }
-
