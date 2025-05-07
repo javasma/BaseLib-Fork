@@ -15,9 +15,9 @@ namespace BaseLib.Core.Services
         private CoreServiceStatus status;
 
         private TRequest? request;
-        protected TRequest? Request
+        protected TRequest Request
         {
-            get { return this.request; }
+            get { return this.request ?? throw new NullReferenceException("Request is null"); }
         }
 
         private TResponse? response;
