@@ -47,9 +47,8 @@ namespace BaseLib.Core.Services.AmazonCloud
 
         private string GetMessageDeduplicationId(string messageBody)
         {
-            using var md5 = MD5.Create();
-            byte[] hashBytes = md5.ComputeHash(Encoding.UTF8.GetBytes(messageBody));
-            return BitConverter.ToString(hashBytes).Replace("-", "").ToLower(); 
+            byte[] hashBytes = MD5.HashData(Encoding.UTF8.GetBytes(messageBody));
+            return BitConverter.ToString(hashBytes); 
         }
     }
 }
