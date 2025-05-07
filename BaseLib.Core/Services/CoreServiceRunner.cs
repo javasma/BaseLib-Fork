@@ -12,10 +12,11 @@ namespace BaseLib.Core.Services
             this.serviceFactory = serviceFactory;
         }
 
-        public Task<CoreResponseBase> RunAsync(string typeName, CoreRequestBase request)
+        public Task<CoreResponseBase> RunAsync(string typeName, CoreRequestBase request, string? correlationId = null)
         {
             var service = this.serviceFactory.Invoke(typeName);
-            return service.RunAsync(request);
+            var response = service.RunAsync(request, correlationId);
+            return response;
         }
 
         public Task<CoreResponseBase> RunAsync(string body)
@@ -26,7 +27,7 @@ namespace BaseLib.Core.Services
                 ?? throw new NullReferenceException("No Service Name on payload");
             var request = payload.Request
                 ?? throw new NullReferenceException("No Request on payload");
-            return RunAsync(typeName, request);
+            return RunAsync(typeName, request, payload.CorrelationId);
         }
     }
 

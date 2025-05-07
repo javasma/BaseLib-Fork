@@ -2,6 +2,27 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "clean",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+            "clean",
+            "${workspaceFolder}/BaseLib.sln"
+            ],
+            "problemMatcher": [],
+            "group": {
+            "kind": "build",
+            "isDefault": false
+            },
+            "dependsOn": "remove-bin-obj"
+        },
+        {
+            "label": "remove-bin-obj",
+            "type": "shell",
+            "command": "find ${workspaceFolder} -type d \\( -name bin -o -name obj \\) -exec rm -rf {} +",
+            "problemMatcher": []
+        },
+        {
             "label": "build",
             "command": "dotnet",
             "type": "process",
@@ -15,7 +36,8 @@
             "group": {
                 "kind": "build",
                 "isDefault": true
-            }
+            },
+            "dependsOn": "clean"
         },
         {
             "label": "pack",
