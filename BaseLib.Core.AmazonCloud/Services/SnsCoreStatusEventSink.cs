@@ -25,34 +25,30 @@ namespace BaseLib.Core.Services.AmazonCloud
         {
             this.topic ??= await this.sns.FindTopicAsync(this.topicName);
 
-            try
+            var message = CoreSerializer.Serialize(statusEvent);
+
+            var response = statusEvent.Response;
+
+            var request = new PublishRequest
             {
-                var message = CoreSerializer.Serialize(statusEvent);
-
-                var response = statusEvent.Response as CoreResponseBase;
-
-                var request = new PublishRequest
+                MessageGroupId = statusEvent.CorrelationId ?? statusEvent.OperationId,
+                MessageDeduplicationId = $"{statusEvent.OperationId}-{statusEvent.Status}",
+                Message = message,
+                TopicArn = topic.TopicArn,
+                MessageAttributes = new Dictionary<string, MessageAttributeValue>
                 {
-                    MessageGroupId = statusEvent.OperationId,
-                    MessageDeduplicationId = $"{statusEvent.OperationId}-{statusEvent.Status}",
-                    Message = message,
-                    TopicArn = topic.TopicArn,
-                    MessageAttributes = new Dictionary<string, MessageAttributeValue> {
-                        { "ModuleName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ModuleName } },
-                        { "ServiceName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ServiceName } },
-                        { "Status",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.Status.ToString() } },
-                        { "Succeeded",  new MessageAttributeValue{ DataType = "String", StringValue = response != null ? response.Succeeded.ToString() : "False" } },
-                        { "ReasonCode",  new MessageAttributeValue{ DataType = "String", StringValue = response != null ? response.ReasonCode.Value.ToString() : "0" } }
-                    }
-                };
+                    { "ModuleName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ModuleName } },
+                    { "ServiceName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ServiceName } },
+                    { "Status",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.Status.ToString() } },
+                    { "Succeeded",  new MessageAttributeValue{ DataType = "String", StringValue = response != null ? response.Succeeded.ToString() : "False" } },
+                    { "ReasonCode",  new MessageAttributeValue{ DataType = "String", StringValue = response != null ? response.ReasonCode.Value.ToString() : "0" } },
+                    { "IsLongRunningService",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.IsLongRunningService.ToString() } },
+                    { "IsLongRunningChild",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.IsLongRunningChild.ToString() } }
+                }
+            };
 
-                await this.sns.PublishAsync(request);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Exception: {ex.Message},\n{ex.StackTrace}");
-                throw;
-            }
+            await this.sns.PublishAsync(request);
         }
     }
 }
+
