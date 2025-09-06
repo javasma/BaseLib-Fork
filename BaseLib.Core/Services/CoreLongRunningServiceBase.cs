@@ -4,7 +4,7 @@ using FluentValidation;
 
 namespace BaseLib.Core.Services
 {
-    public abstract partial class CoreLongRunningServiceBase<TRequest, TResponse> : CoreServiceBase<TRequest, TResponse>, ICoreLongRunningService<TResponse> 
+    public abstract partial class CoreLongRunningServiceBase<TRequest, TResponse> : CoreServiceBase<TRequest, TResponse>, ICoreLongRunningService<TResponse>
         where TRequest : CoreRequestBase
         where TResponse : CoreResponseBase, new()
     {
@@ -64,16 +64,10 @@ namespace BaseLib.Core.Services
                 throw new ArgumentNullException(nameof(operationId));
             try
             {
-                Console.WriteLine($"Resuming long-running service {this.GetType().Name} with OperationId: {operationId}");
-
                 var state = await this.stateStore.ReadAsync(operationId);
                 this.SetState(state);
 
-                Console.WriteLine($"State restored for service {this.GetType().Name} with OperationId {this.OperationId}");
-
                 this.Response = await this.ResumeAsync();
-
-                Console.WriteLine($"Service {this.GetType().Name} with OperationId {this.OperationId} resumed with response: Succeeded={this.Response.Succeeded}, ReasonCode={this.Response.ReasonCode}");
 
                 //always set the OperationId
                 this.Response.OperationId = this.OperationId;
@@ -100,8 +94,6 @@ namespace BaseLib.Core.Services
             finally
             {
                 this.Status = CoreServiceStatus.Finished;
-                // Always write the status event at the end of resume
-                Console.WriteLine($"Finalizing long-running service {this.GetType().Name} with OperationId {this.OperationId}");
 
                 this.FinishedOn = DateTimeOffset.UtcNow;
 
@@ -159,7 +151,6 @@ namespace BaseLib.Core.Services
 
                     if (state.TryGetValue(field.Name, out var value))
                     {
-                        Console.WriteLine($"Restoring field {field.Name} of type {field.FieldType.Name} with value {(value != null ? value.GetType().Name : "null")}");
                         field.SetValue(this, value);
                     }
                 }
@@ -167,8 +158,5 @@ namespace BaseLib.Core.Services
                 type = type.BaseType;
             }
         }
-
-
-
     }
 }

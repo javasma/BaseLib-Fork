@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseLib.Core.AmazonCloud", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseLib.Core", "BaseLib.Core\BaseLib.Core.csproj", "{8EFF793E-0D44-454C-A731-95E61BD9F6E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BaseLib.Core.Tests", "BaseLib.Core.Tests\BaseLib.Core.Tests.csproj", "{4157DC5C-C90C-4A02-BC5B-807630CE6F04}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{8EFF793E-0D44-454C-A731-95E61BD9F6E2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8EFF793E-0D44-454C-A731-95E61BD9F6E2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8EFF793E-0D44-454C-A731-95E61BD9F6E2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4157DC5C-C90C-4A02-BC5B-807630CE6F04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4157DC5C-C90C-4A02-BC5B-807630CE6F04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4157DC5C-C90C-4A02-BC5B-807630CE6F04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4157DC5C-C90C-4A02-BC5B-807630CE6F04}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
