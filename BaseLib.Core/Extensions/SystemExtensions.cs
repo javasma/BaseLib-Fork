@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Linq;
 
 namespace System
 {
@@ -7,16 +6,25 @@ namespace System
     {
         public static string GetDescription(this Enum @enum)
         {
-            var memberName = @enum.ToString();
+            var enumString = @enum.ToString();
             var type = @enum.GetType();
-            var memberInfo = type.GetMember(memberName)[0];
-            var attr = memberInfo.GetCustomAttributes(typeof(DescriptionAttribute), false).FirstOrDefault() as DescriptionAttribute;
-            if (attr != null)
-            {
-                return attr.Description;
-            }
 
-            return @enum.ToString();
+            // Handle Flags enums with multiple values
+            var memberNames = enumString.Contains(',')
+                ? enumString.Split(new[] { ", " }, StringSplitOptions.None)
+                : [enumString];
+
+            return string.Join(", ", memberNames.Select(memberName =>
+            {
+                var memberInfo = type.GetMember(memberName)[0];
+                if (memberInfo?.GetCustomAttributes(typeof(DescriptionAttribute), false)
+                    .FirstOrDefault() is DescriptionAttribute attr)
+                {
+                    return attr.Description;
+                }
+
+                return @enum.ToString();
+            }));
         }
 
     }

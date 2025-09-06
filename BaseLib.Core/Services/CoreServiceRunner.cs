@@ -1,40 +1,68 @@
 using BaseLib.Core.Models;
-using BaseLib.Core.Serialization;
+using System.Collections.Concurrent;
 
 namespace BaseLib.Core.Services
 {
-    public class CoreServiceRunner
+    public class CoreServiceRunner : ICoreServiceRunner
     {
-        private readonly Func<string, ICoreServiceBase> serviceFactory;
+        private readonly ConcurrentDictionary<string, Type> _typeCache = new();
+        private readonly IServiceProvider serviceProvider;
 
-        public CoreServiceRunner(Func<string, ICoreServiceBase> serviceFactory)
+        public CoreServiceRunner(IServiceProvider serviceProvider)
         {
-            this.serviceFactory = serviceFactory;
+            this.serviceProvider = serviceProvider;
         }
 
-        public Task<CoreResponseBase> RunAsync(string typeName, CoreRequestBase request, string? correlationId = null)
+        public Task<CoreResponseBase> RunAsync(string typeName, CoreRequestBase request, string? correlationId = null, bool IsLongRunningChild = false)
         {
-            var service = this.serviceFactory.Invoke(typeName);
-            var response = service.RunAsync(request, correlationId);
-            return response;
+            var service = this.ResolveServiceByTypeName(typeName) as ICoreServiceBase
+                ?? throw new NullReferenceException($"Service '{typeName}' does not implement ICoreServiceBase");
+            return service.RunAsync(request, correlationId, IsLongRunningChild);
         }
 
-        public Task<CoreResponseBase> RunAsync(string body)
+        public Task<CoreResponseBase> ResumeAsync(string typeName, string operationId)
         {
-            var payload = CoreSerializer.Deserialize<Payload>(body)
-                ?? throw new NullReferenceException("Unable to deserialize payload");
-            var typeName = payload.Service
-                ?? throw new NullReferenceException("No Service Name on payload");
-            var request = payload.Request
-                ?? throw new NullReferenceException("No Request on payload");
-            return RunAsync(typeName, request, payload.CorrelationId);
+            var service = this.ResolveServiceByTypeName(typeName) as ICoreLongRunningService
+                ?? throw new NullReferenceException($"Service '{typeName}' does not implement ICoreLongRunningService");
+            return service.ResumeAsync(operationId);
+        }
+
+        /// <summary>
+        /// Creates an instance of ICoreServiceBase based on the fully qualified type name
+        /// </summary>
+        private object ResolveServiceByTypeName(string typeName)
+        {
+            // Check cache first for high performance
+            var type = _typeCache.GetOrAdd(typeName, ResolveType);
+
+            var service = this.serviceProvider.GetService(type)
+                ?? throw new InvalidOperationException($"Failed to resolve service of type '{typeName}'.");
+
+            return service;
+        }
+
+        /// <summary>
+        /// Resolves a type by its fully qualified name using Type.GetType
+        /// </summary>
+        private Type ResolveType(string typeName)
+        {
+            // Use Type.GetType which handles assembly loading for fully qualified names
+            var type = Type.GetType(typeName);
+
+            if (type != null)
+                return type;
+
+            // As a fallback, try to find it in currently loaded assemblies
+            type = AppDomain.CurrentDomain.GetAssemblies()
+                .Select(a => a.GetType(typeName))
+                .FirstOrDefault(t => t != null);
+
+            if (type != null)
+                return type;
+
+            throw new TypeLoadException($"Could not load type '{typeName}'. Ensure the assembly is referenced and the type name is correct.");
         }
     }
 
-    internal class Payload
-    {
-        public string? Service { get; set; }
-        public CoreRequestBase? Request { get; set; }
-        public string? CorrelationId { get; set; }
-    }
+   
 }

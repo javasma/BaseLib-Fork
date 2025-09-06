@@ -2,6 +2,7 @@
 
 namespace BaseLib.Core.Services
 {
+    [Flags]
     public enum CoreServiceReasonCode
     {
         [Description("Undefined")]
@@ -12,6 +13,9 @@ namespace BaseLib.Core.Services
 
         [Description("Error Operacion")]
         Failed = 2,
+
+        [Description("Suspendida")]
+        Suspended = 4,
 
         [Description("Operación no implementada")]
         NotImplemented = 64,

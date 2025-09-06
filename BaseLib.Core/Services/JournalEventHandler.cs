@@ -43,7 +43,9 @@ namespace BaseLib.Core.Services
                 CorrelationId = statusEvent.CorrelationId,
                 Succeeded = statusEvent.Response?.Succeeded ?? false,
                 ReasonCode = statusEvent.Response?.ReasonCode ?? CoreReasonCode.Null,
-                Messages = statusEvent.Response?.Messages ?? Array.Empty<string>()
+                Messages = statusEvent.Response?.Messages ?? Array.Empty<string>(),
+                IsLongRunning = statusEvent.IsLongRunningService,
+                IsLongRunningChild = statusEvent.IsLongRunningChild               
             };
 
         }

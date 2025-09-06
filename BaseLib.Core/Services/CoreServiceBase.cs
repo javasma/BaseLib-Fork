@@ -9,10 +9,15 @@ namespace BaseLib.Core.Services
     {
         private string? operationId;
         private string? correlationId;
-
+        private bool isLongRunningChild;
         private DateTimeOffset startedOn;
         private DateTimeOffset finishedOn;
         private CoreServiceStatus status;
+        protected CoreServiceStatus Status
+        {
+            get { return this.status; }
+            set { this.status = value; }
+        }
 
         private TRequest? request;
         protected TRequest Request
@@ -35,7 +40,7 @@ namespace BaseLib.Core.Services
 
         protected DateTimeOffset StartedOn { get { return this.startedOn; } }
 
-        protected DateTimeOffset FinishedOn { get { return this.finishedOn; } }
+        protected DateTimeOffset FinishedOn { get { return this.finishedOn; } set { this.finishedOn = value; } }
 
         public CoreServiceBase(IValidator<TRequest>? validator = null, ICoreStatusEventSink? eventSink = null)
         {
@@ -43,13 +48,13 @@ namespace BaseLib.Core.Services
             this.EventSink = eventSink ?? new NullCoreEventSink();
         }
 
-        public async Task<CoreResponseBase> RunAsync(CoreRequestBase request, string? correlationId = null)
+        public async virtual Task<CoreResponseBase> RunAsync(CoreRequestBase request, string? correlationId = null, bool isLongRunningChild = false)
         {
-            var response = await RunAsync((TRequest)request, correlationId);
+            var response = await RunAsync((TRequest)request, correlationId, isLongRunningChild);
             return response;
         }
 
-        public async Task<TResponse> RunAsync(TRequest request, string? correlationId = null)
+        public async virtual Task<TResponse> RunAsync(TRequest request, string? correlationId = null, bool isLongRunningChild = false)
         {
             try
             {
@@ -57,6 +62,7 @@ namespace BaseLib.Core.Services
                 this.request = request;
                 this.operationId = Guid.NewGuid().ToString();
                 this.correlationId = correlationId;
+                this.isLongRunningChild = isLongRunningChild;
                 this.startedOn = DateTimeOffset.UtcNow;
 
                 await this.OnWriteStatusEventAsync();
@@ -80,6 +86,9 @@ namespace BaseLib.Core.Services
                 //No hay validación o la validación fue exitosa
                 this.response = await RunAsync();
 
+                //always set the OperationId
+                this.response.OperationId = this.operationId;
+
                 if (this.response.ReasonCode == CoreServiceReasonCode.Undefined)
                 {
                     this.response.ReasonCode = this.response.Succeeded ? CoreServiceReasonCode.Succeeded : CoreServiceReasonCode.Failed;
@@ -89,24 +98,31 @@ namespace BaseLib.Core.Services
             {
                 this.response = new TResponse
                 {
+                    OperationId = this.operationId,
                     Succeeded = false,
                     ReasonCode = CoreServiceReasonCode.ExceptionHappened,
-                    Messages = new string[] { 
+                    Messages = [
                         $"Exception of type {ex.GetType().Name} on {this.GetType().Name} with message {ex.Message} Happened",
                         ex.StackTrace ?? "No StackTrace in exception"
-                    }
+                    ]
                 };
             }
             finally
             {
-                this.status = CoreServiceStatus.Finished;
-                this.finishedOn = DateTimeOffset.UtcNow;
-
-                await this.OnWriteStatusEventAsync();
+                await this.FinalizeAsync();
             }
 
             return this.response;
 
+        }
+
+        protected virtual Task FinalizeAsync()
+        {
+            this.status = CoreServiceStatus.Finished;
+
+            this.finishedOn = DateTimeOffset.UtcNow;
+
+            return this.OnWriteStatusEventAsync();
         }
 
         protected abstract Task<TResponse> RunAsync();
@@ -138,11 +154,13 @@ namespace BaseLib.Core.Services
         protected virtual CoreStatusEvent GetStatusEvent()
         {
             //type of the service
-            var type = this.GetType(); 
+            var type = this.GetType();
+            var assemblyName = type.Assembly.GetName().Name;
 
             return new CoreStatusEvent
             {
-                ModuleName = type.Assembly.GetName().Name,
+                TypeName = $"{type.FullName}, {assemblyName}",
+                ModuleName = assemblyName,
                 ServiceName = type.Name,
                 Status = this.status,
                 OperationId = this.operationId,
@@ -150,7 +168,8 @@ namespace BaseLib.Core.Services
                 StartedOn = this.startedOn,
                 FinishedOn = this.finishedOn,
                 Request = this.request,
-                Response = this.response
+                Response = this.response,
+                IsLongRunningChild = this.isLongRunningChild
             };
         }
 

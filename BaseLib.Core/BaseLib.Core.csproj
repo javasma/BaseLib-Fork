@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>BaseLib.Core</PackageId>
-    <Version>3.0.0-beta-004</Version>
+    <Version>3.1.0-alpha-001</Version>
     <Authors>Mauricio David Obando</Authors>
     <Company>Mauricio David Obando</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
@@ -17,7 +17,7 @@
     <EmbeddedResource Include="Resources\fix-self-closing-tags.xslt" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
-    <PackageReference Include="MimeKit" Version="4.12.0" />
+    <PackageReference Include="FluentValidation" Version="11.*" />
+    <PackageReference Include="MimeKit" Version="4.*" />
   </ItemGroup>
 </Project>
