@@ -366,3 +366,5 @@ FodyWeavers.xsd
 Test/
 Demo/
 
+# macOS system files
+**/.DS_Store
