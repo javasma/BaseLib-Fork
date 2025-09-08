@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackageId>BaseLib.Core</PackageId>
-    <Version>3.1.0-alpha-001</Version>
+    <Version>3.1.0</Version>
     <Authors>Mauricio David Obando</Authors>
     <Company>Mauricio David Obando</Company>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>

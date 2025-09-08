@@ -1,32 +1,32 @@
 <Project Sdk="Microsoft.NET.Sdk">
-	<PropertyGroup>
-		<TargetFramework>net8.0</TargetFramework>
-		<ImplicitUsings>enable</ImplicitUsings>
-		<Nullable>enable</Nullable>
-		<PackageId>BaseLib.Core.MySql</PackageId>
-		<Version>3.1.0-alpha-001</Version>
-		<Authors>Mauricio David Obando</Authors>
-		<Company>Mauricio David Obando</Company>
-		<PackageLicenseExpression>MIT</PackageLicenseExpression>
-		<RepositoryUrl>https://github.com/mauriciodavid70/BaseLib</RepositoryUrl> 
-		<RepositoryType>git</RepositoryType>
-		<PackageReadmeFile>readme.md</PackageReadmeFile>
-	</PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <PackageId>BaseLib.Core.MySql</PackageId>
+    <Version>3.1.0</Version>
+    <Authors>Mauricio David Obando</Authors>
+    <Company>Mauricio David Obando</Company>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/mauriciodavid70/BaseLib</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReadmeFile>readme.md</PackageReadmeFile>
+  </PropertyGroup>
 
-	<ItemGroup Condition="'$(UseNuGetPackages)' != 'true'">
-		<ProjectReference Include="..\BaseLib.Core\BaseLib.Core.csproj" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(UseNuGetPackages)' != 'true'">
+    <ProjectReference Include="..\BaseLib.Core\BaseLib.Core.csproj" />
+  </ItemGroup>
 
-	<ItemGroup Condition="'$(UseNuGetPackages)' == 'true'">
-		<PackageReference Include="BaseLib.Core" Version="3.1.*-*" />
-	</ItemGroup>
+  <ItemGroup Condition="'$(UseNuGetPackages)' == 'true'">
+    <PackageReference Include="BaseLib.Core" Version="3.1.*-*" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<PackageReference Include="MySql.Data" Version="8.0.33" />
-	</ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MySql.Data" Version="8.0.33" />
+  </ItemGroup>
 
-	<ItemGroup>
-		<None Include="readme.md" Pack="true" PackagePath="\"/>
-	</ItemGroup>
-	
+  <ItemGroup>
+    <None Include="readme.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
 </Project>
