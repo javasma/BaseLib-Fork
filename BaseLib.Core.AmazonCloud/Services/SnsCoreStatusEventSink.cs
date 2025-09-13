@@ -13,17 +13,45 @@ namespace BaseLib.Core.Services.AmazonCloud
     {
         private readonly IAmazonSimpleNotificationService sns;
         private readonly string topicName;
+        private readonly bool isFifo;
         private Topic? topic;
+        private readonly SemaphoreSlim initializationSemaphore = new SemaphoreSlim(1, 1);
+        private bool isInitialized = false;
 
         public SnsCoreStatusEventSink(IAmazonSimpleNotificationService sns, string topicName)
         {
             this.sns = sns;
             this.topicName = topicName;
+            this.isFifo = topicName.EndsWith(".fifo", StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Initializes the SNS topic asynchronously, ensuring it only happens once
+        /// </summary>
+        /// <returns>A Task representing the asynchronous operation</returns>
+        private async Task InitializeAsync()
+        {
+            if (!isInitialized)
+            {
+                try
+                {
+                    await initializationSemaphore.WaitAsync();
+                    if (!isInitialized)
+                    {
+                        this.topic = await this.sns.FindTopicAsync(this.topicName);
+                        isInitialized = true;
+                    }
+                }
+                finally
+                {
+                    initializationSemaphore.Release();
+                }
+            }
         }
 
         public async Task WriteAsync(CoreStatusEvent statusEvent)
         {
-            this.topic ??= await this.sns.FindTopicAsync(this.topicName);
+            await InitializeAsync();
 
             var message = CoreSerializer.Serialize(statusEvent);
 
@@ -31,10 +59,8 @@ namespace BaseLib.Core.Services.AmazonCloud
 
             var request = new PublishRequest
             {
-                MessageGroupId = statusEvent.CorrelationId ?? statusEvent.OperationId,
-                MessageDeduplicationId = $"{statusEvent.OperationId}-{statusEvent.Status}",
                 Message = message,
-                TopicArn = topic.TopicArn,
+                TopicArn = topic!.TopicArn,
                 MessageAttributes = new Dictionary<string, MessageAttributeValue>
                 {
                     { "ModuleName",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.ModuleName } },
@@ -46,6 +72,13 @@ namespace BaseLib.Core.Services.AmazonCloud
                     { "IsLongRunningChild",  new MessageAttributeValue{ DataType = "String", StringValue = statusEvent.IsLongRunningChild.ToString() } }
                 }
             };
+
+            // Set FIFO-specific attributes if this is a FIFO topic
+            if (this.isFifo)
+            {
+                request.MessageGroupId = statusEvent.CorrelationId ?? statusEvent.OperationId;
+                request.MessageDeduplicationId = $"{statusEvent.OperationId}-{statusEvent.Status}";
+            }
 
             await this.sns.PublishAsync(request);
         }
