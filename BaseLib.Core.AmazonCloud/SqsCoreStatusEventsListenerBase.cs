@@ -13,12 +13,24 @@ namespace BaseLib.Core.AmazonCloud
     {
         public virtual async Task<SQSBatchResponse> HandleAsync(SQSEvent sqsEvent, ILambdaContext context)
         {
-            var processingTasks = new Dictionary<string, Task>();
+            var events = MapEvents(sqsEvent);
 
-            foreach (var message in sqsEvent.Records)
+            string[] failedEventIds = await HandleAsync(events);
+
+            var batchItemFailures = failedEventIds.Select(id => new SQSBatchResponse.BatchItemFailure { ItemIdentifier = id }).ToList();
+
+            return new SQSBatchResponse
             {
+                BatchItemFailures = batchItemFailures
+            };
+        }
 
-                processingTasks[message.MessageId] = HandleSingleMessageAsync(message);
+        protected virtual async Task<string[]> HandleAsync(Dictionary<string, CoreStatusEvent> events)
+        {
+            var processingTasks = new Dictionary<string, Task>();
+            foreach (var kvp in events)
+            {
+                processingTasks[kvp.Key] = HandleStatusEventAsync(kvp.Value);
             }
 
             try
@@ -30,27 +42,31 @@ namespace BaseLib.Core.AmazonCloud
                 // Intentionally swallowing exceptions to allow batch failure handling below.
             }
 
-            var batchItemFailures = processingTasks
+            var listOfFailedIds = processingTasks
                 .Where(t => t.Value.IsFaulted)
-                .Select(f => new SQSBatchResponse.BatchItemFailure { ItemIdentifier = f.Key })
-                .ToList();
+                .Select(i => i.Key)
+                .ToArray();
 
-            return new SQSBatchResponse
-            {
-                BatchItemFailures = batchItemFailures
-            };
+            return listOfFailedIds;
+
         }
 
-        private async Task HandleSingleMessageAsync(SQSEvent.SQSMessage message)
+        protected virtual Dictionary<string, CoreStatusEvent> MapEvents(SQSEvent sqsEvent)
         {
-            var snsNotification = JsonSerializer.Deserialize<SnsNotification>(message.Body);
-            if (snsNotification?.Message == null)
-                throw new NullReferenceException("No Message on SNS Notification");
+            var events = new Dictionary<string, CoreStatusEvent>();
 
-            var coreEvent = CoreSerializer.Deserialize<CoreStatusEvent>(snsNotification.Message)
-                ?? throw new NullReferenceException("No CoreStatusEvent on SNS Notification");
+            foreach (var message in sqsEvent.Records)
+            {
+                var snsNotification = JsonSerializer.Deserialize<SnsNotification>(message.Body);
+                if (snsNotification?.Message == null)
+                    throw new NullReferenceException("No Message on SNS Notification");
 
-            await HandleStatusEventAsync(coreEvent);
+                var coreEvent = CoreSerializer.Deserialize<CoreStatusEvent>(snsNotification.Message)
+                    ?? throw new NullReferenceException("No CoreStatusEvent on SNS Notification");
+
+                events[message.MessageId] = coreEvent;
+            }
+            return events;
         }
 
         protected abstract Task HandleStatusEventAsync(CoreStatusEvent coreEvent);
