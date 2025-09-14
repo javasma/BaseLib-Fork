@@ -10,7 +10,7 @@ namespace BaseLib.Core.Services
     {
         private readonly ICoreServiceFireOnly fireOnly;
         private readonly ICoreServiceStateStore stateStore;
-        private int childrenCount = 0;
+        private int childrenCount = 0; // This will be accessed with Interlocked methods for thread safety
 
         public CoreLongRunningServiceBase(ICoreServiceFireOnly invoker, ICoreServiceStateStore stateStore, IValidator<TRequest>? validator = null, ICoreStatusEventSink? eventSink = null)
             : base(validator, eventSink)
@@ -109,8 +109,18 @@ namespace BaseLib.Core.Services
         public virtual Task FireAsync<TService>(CoreRequestBase request, string? correlationId = null)
             where TService : ICoreServiceBase
         {
-            this.childrenCount++;
+            // Increment the children count in a thread-safe manner
+            Interlocked.Increment(ref this.childrenCount);
             return this.fireOnly.FireAsync<TService>(request, correlationId ?? this.OperationId, isLongRunningChild: true);
+        }
+
+        public virtual Task FireManyAsync<TService>(IEnumerable<CoreRequestBase> requests, string? correlationId = null)
+            where TService : ICoreServiceBase
+        {
+            // Get count and use Interlocked for thread safety
+            int count = requests.Count();
+            Interlocked.Add(ref this.childrenCount, count);
+            return this.fireOnly.FireManyAsync<TService>(requests, correlationId ?? this.OperationId, isLongRunningChild: true);
         }
 
         protected IDictionary<string, object?> GetState()
